@@ -3,7 +3,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { User } from '../slices/User.slice';
 
-const IncommingRequest = ({ setIncomingRequest }) => {
+const IncommingRequest = ({ setIncommingRequest }) => {
   const dummyUsers = [
     { name: "Krish", avatar: "https://randomuser.me/api/portraits/men/75.jpg" },
     { name: "Anjali", avatar: "https://randomuser.me/api/portraits/women/65.jpg" },
@@ -47,7 +47,7 @@ const IncommingRequest = ({ setIncomingRequest }) => {
           <h2 className="text-xl font-semibold text-gray-700">Incoming Friend Requests</h2>
           <button
             className="text-gray-500 hover:text-red-600 text-lg font-bold"
-            onClick={() => setIncomingRequest(false)}
+            onClick={() => setIncommingRequest(false)}
           >
             ✕
           </button>

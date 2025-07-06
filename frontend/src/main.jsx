@@ -39,10 +39,6 @@ const appRouter= createBrowserRouter([
         element:<Profile/>
       },
      
-      {
-        path:"/incoming-requests",
-        element:<IncommingRequest/>
-      }
     ]
   }
 ])

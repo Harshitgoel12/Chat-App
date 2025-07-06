@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Paperclip } from 'lucide-react';
 import socket from '../socket';
+import DefaultPage from './DefaultPage';
 
 const RightPart = () => {
   const myuser = useSelector((state) => state.user.userData);
@@ -128,8 +129,18 @@ console.log(file,fileType)
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [Messages]);
 
+
+console.log("selected user is ",SelectedUser)
+if(!SelectedUser){
+  return <DefaultPage/>
+}
+
+
+
+
+
   return (
-    <div className="fixed top-12 right-0 w-full md:w-[66.5%] h-[calc(100vh-3rem)] bg-cover bg-center overflow-hidden">
+    <div className="fixed md:top-12 top-20 right-0 w-full md:w-[66.5%] h-[calc(100vh-3rem)] bg-cover bg-center overflow-hidden">
       <div className="w-full h-full flex flex-col justify-between p-4 md:p-6 backdrop-blur-sm bg-white/10 rounded-l-xl shadow-inner shadow-black/30">
         
         
@@ -146,11 +157,11 @@ console.log(file,fileType)
           {Messages.map((msg, idx) => (
             <div
               key={idx}
-              className={`p-3 rounded-lg max-w-68 text-white break-words ${
+              className={`p-2 rounded-lg md:max-w-68 max-w-56 text-white break-words ${
                 msg.senderId === myID ? 'bg-white/20 self-end ml-auto' : 'bg-blue-800/60'
               }`}
             >
-              {msg.message && <p>{msg.message}</p>}
+              {msg.message && <span>{msg.message}</span>}
 
               {msg.file && (
                 <div className="mt-2">
@@ -180,7 +191,7 @@ console.log(file,fileType)
         <div className="mt-4 flex items-center gap-3">
           <div className="relative">
             <button onClick={triggerFileInput} type="button">
-              <Paperclip className="w-6 h-6 ms-2 text-white" />
+              <Paperclip className="w-6  md:mb-0 mb-10 h-6 ms-2 text-white" />
             </button>
             <input
               type="file"
@@ -196,12 +207,12 @@ console.log(file,fileType)
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyPress}
-            className="flex-1 ps-10 bg-white/20 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder:text-gray-200"
+            className="flex-1 ps-3 md:mb-0 mb-10 bg-white/20 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder:text-gray-200"
           />
 
           <button
             onClick={handleSend}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+            className="bg-blue-600 md:mb-0 mb-10 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
           >
             Send
           </button>

@@ -6,13 +6,14 @@ import { SelectedUser } from '../slices/User.slice';
 
 const LeftPart = () => {
   const contacts=useSelector(state=>state.user.userData);
+   const Selecteduser = useSelector((state) => state.user.Receiver);
   const myContacts=contacts?.myContacts
   const dispatch=useDispatch();
   const SelectUserHandler=(id)=>{
     dispatch(SelectedUser(id));
   }
   return (
-    <div className=' w-1/3 scrollbar-hide mt-12 min-h-screen'>
+    <div className={`w-screen md:w-1/3 ${Selecteduser?"md:flex hidden ":""} scrollbar-hide md:mt-12 mt-20 min-h-screen`}>
       <div className='w-full min-h-screen bg-transparent shadow-xl shadow-amber-400 backdrop-blur-sm  '>
       <div className='w-full'>
        

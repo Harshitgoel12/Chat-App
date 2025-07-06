@@ -5,12 +5,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { User } from '../slices/User.slice';
 import axios from 'axios';
 import SendedRequest from './SendedRequest';
+import IncommingRequestPage from "./IncommingRequest.jsx"
 
 
 const Header = () => {
   const [showSearchModal, setSearchModal] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sendRequest,setSendRequest]=useState(false);
+  const [IncommingRequest,setIncommingRequest]=useState(false);
 
   const user = useSelector((state) => state.user.userData);
   console.log("user is", user)
@@ -36,7 +38,7 @@ const Header = () => {
         <nav className="hidden md:flex gap-6 text-lg font-medium">
           <button onClick={() => setSearchModal(true)} className="hover:text-yellow-300 transition">Search</button>
           <h1  className="hover:text-yellow-300 transition cursor-pointer" onClick={()=>setSendRequest(true)}>Sent Requests</h1>
-          <Link to="/incoming-requests" className="hover:text-yellow-300 transition">Incoming Requests</Link>
+          <h1 className="hover:text-yellow-300 transition cursor-pointer" onClick={()=>setIncommingRequest(true)}>Incoming Requests</h1>
           <Link to={'/Contacts'}>Contacts</Link>
         </nav>
 
@@ -70,7 +72,8 @@ const Header = () => {
       <div className="md:hidden mt-2 flex justify-center gap-4 text-white text-sm">
         <button onClick={() => setSearchModal(true)} className="hover:underline">Search</button>
         <h1 onClick={()=>setSendRequest(true)} className="hover:underline">Sent</h1>
-        <Link to="/incoming-requests" className="hover:underline">Incoming</Link>
+        <h1 className="hover:underline cursor-pointer" onClick={()=>setIncommingRequest(true)}>Incoming</h1>
+        <Link to={"/Contacts"} className='cursor-pointer'>Contacts</Link>
       </div>
 
       {/* Search Modal */}
@@ -81,6 +84,7 @@ const Header = () => {
       )}
 
       {sendRequest&&<SendedRequest setSendRequest={setSendRequest}/>}
+      {IncommingRequest&&<IncommingRequestPage  setIncommingRequest={setIncommingRequest}/>}
     </header>
   );
 };
