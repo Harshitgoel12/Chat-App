@@ -9,14 +9,18 @@ import Contact from './pages/Contact.jsx'
 import { Provider } from 'react-redux'
 import store from  "./store.js"
 import Profile from './pages/Profile.jsx'
-import SendedRequest from './pages/SendedRequest.jsx'
-import IncommingRequest from './pages/IncommingRequest.jsx'
+import  Home  from './Home.jsx'
+
 
 const appRouter= createBrowserRouter([
   {
     path:"/",
     element:<App/>,
-    children:[
+    children :[
+      {
+        path:"",
+        element:<Home/>
+      },
       {
         path:"signup",
         element:<Signup/>
@@ -30,17 +34,19 @@ const appRouter= createBrowserRouter([
         element:<Otp/>
       },
       {
-        path:"/contacts",
+        path:"contacts",
         element:<Contact/>,
         
       },
       {
-        path:"/Profile/:id",
+        path:"Profile/:id",
         element:<Profile/>
       },
-     
+
     ]
   }
+     
+   
 ])
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>

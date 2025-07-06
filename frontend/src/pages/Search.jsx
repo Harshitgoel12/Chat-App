@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios"
 import { useNavigate } from "react-router-dom";
+import { RxCross1 } from "react-icons/rx";
+
 
 const dummyUsers = [
   { name: "Krish", avatar: "https://randomuser.me/api/portraits/men/75.jpg" },
@@ -27,6 +29,7 @@ useEffect(()=>{
   const filteredUsers = Users?.filter((user) =>
     user.Username.toLowerCase().includes(query.toLowerCase())
   );
+  console.log("ye rhe filtered user ",filteredUsers)
 
 
   const handleNavigation=(id)=>{
@@ -40,12 +43,12 @@ useEffect(()=>{
           onClick={onClose}
           className="absolute top-3 right-4 text-gray-500 hover:text-black text-xl"
         >
-          ×
+        <RxCross1  className="text-xl font-extrabold"/>
         </button>
         <input
           type="text"
           placeholder="Search users..."
-          className="w-full border border-gray-300 rounded-md p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full mt-4 border border-gray-300 rounded-md p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
@@ -57,7 +60,7 @@ useEffect(()=>{
                 className="flex items-center gap-4 p-2 hover:bg-gray-100 rounded-md cursor-pointer" onClick={()=>handleNavigation(user._id)}
               >
                 <img
-                  src={dummyUsers[0].avatar}
+                  src={user.url}
                  
                   className="w-10 h-10 rounded-full"
                 />
