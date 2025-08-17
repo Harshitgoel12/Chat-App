@@ -1,3 +1,10 @@
+
+import * as process from "process";
+global.process = process;
+import { Buffer } from 'buffer';
+window.Buffer = Buffer;
+window.process = process;
+
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
@@ -10,6 +17,10 @@ import { Provider } from 'react-redux'
 import store from  "./store.js"
 import Profile from './pages/Profile.jsx'
 import  Home  from './Home.jsx'
+import Video from './pages/Video.jsx'
+import socket from './socket.js'
+
+
 
 
 const appRouter= createBrowserRouter([
@@ -42,6 +53,10 @@ const appRouter= createBrowserRouter([
         path:"Profile/:id",
         element:<Profile/>
       },
+      {
+        path:"video",
+        element:<Video/>
+      }
 
     ]
   }

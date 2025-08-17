@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 import { Paperclip } from 'lucide-react';
 import socket from '../socket';
 import DefaultPage from './DefaultPage';
+import { useNavigate } from 'react-router-dom';
+import Peer from "simple-peer"
 
 const RightPart = () => {
   const myuser = useSelector((state) => state.user.userData);
@@ -14,6 +16,7 @@ const RightPart = () => {
   const [Messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
+  const navigate=useNavigate();
 
   // Fetch chat history
   const fetchAllMessages = async () => {
@@ -30,11 +33,7 @@ const RightPart = () => {
   };
 
   // Add user to socket list
-  useEffect(() => {
-    if (myID) {
-      socket.emit('add-user', myID);
-    }
-  }, [myID]);
+ 
 
   // Fetch messages on receiver change
   useEffect(() => {
@@ -130,13 +129,15 @@ console.log(file,fileType)
   }, [Messages]);
 
 
-console.log("selected user is ",SelectedUser)
 if(!SelectedUser){
   return <DefaultPage/>
 }
 
 
-
+const handleCall=()=>{
+      
+      navigate('/video',{state:{caller:true}});
+}
 
 
   return (
@@ -149,6 +150,7 @@ if(!SelectedUser){
           <div>
             <h2 className="text-white font-bold text-lg">{SelectedUser?.Username}</h2>
             <p className="text-green-400 text-sm">Online</p>
+            <p className='text-white  cursor-pointer' onClick={handleCall}>Call</p>
           </div>
         </div>
 

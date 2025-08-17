@@ -2,6 +2,7 @@ import React from 'react'
 import { data } from './data'
 import { useDispatch, useSelector } from 'react-redux'
 import { SelectedUser } from '../slices/User.slice';
+import socket from '../socket';
 
 
 const LeftPart = () => {
@@ -11,7 +12,9 @@ const LeftPart = () => {
   const dispatch=useDispatch();
   const SelectUserHandler=(id)=>{
     dispatch(SelectedUser(id));
+   
   }
+  
   return (
     <div className={`w-screen md:w-1/3 ${Selecteduser?"md:flex hidden ":""} scrollbar-hide md:mt-12 mt-20 min-h-screen`}>
       <div className='w-full min-h-screen bg-transparent shadow-xl shadow-amber-400 backdrop-blur-sm  '>

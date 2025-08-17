@@ -12,7 +12,7 @@ const navigate=useNavigate();
     Email:"",
     Password:"",
     ConfirmPassword:"",
-    url:"https://avatar.iran.liara.run/public"
+    url:"https://xsgames.co/randomusers/avatar.php?g=male"
   })
   const handleChange=(e)=>{
     setUserData(prev=>({...prev,[e.target.name]:e.target.value})) 

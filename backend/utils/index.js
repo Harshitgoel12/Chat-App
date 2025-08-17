@@ -31,6 +31,57 @@ io.on("connection", (socket) => {
     console.log(` User ${userId} added to online list`);
   });
 
+  socket.on("CallToUser",(data)=>{
+    const socketId=onlineUsers.get(data.CallToUser);
+    console.log(onlineUsers)
+    console.log("callto user id",socketId);
+    if(socketId){
+    io.to(socketId).emit("CallToUser",{
+        signal:data.signal,
+          myID:data.myID,
+          userName:data.userName,
+          ProfilePic:data.ProfilePic,
+    })
+    }else{
+      console.log("user is not present")
+    }
+  })
+
+  socket.on("rejectCall",(data)=>{
+      const socketId= onlineUsers.get(data.CallerID);
+      if(socketId){
+        io.to(socketId).emit("rejectCall",{
+          data:"call is rejected"
+        })
+      }
+  })
+
+  socket.on("AnswerCall",(data)=>{
+            const socketId=onlineUsers.get(data.CallToUser);
+       
+            if(socketId){
+            io.to(socketId).emit("AnswerCall",{
+              signal:data.signal,
+              CallerId:data.myID,
+              receiverName:data.userName,
+              receiverPic:data.ProfilePic,
+            })
+            }
+            else{
+              console.log("socket id present hi nhi hai caller ki to m kya kru")
+            }
+     
+  })
+
+  socket.on("CallEnded",(data)=>{
+    const OtherSocketId= onlineUsers.get(data.Other);
+    if(OtherSocketId){
+      io.to(OtherSocketId).emit("CallEnded",{
+        value:"call is ended"
+      });
+    }
+  })
+
   
   socket.on("send-msg", (data) => {
     const receiverSocketId = onlineUsers.get(data.to || data.receiverId);
