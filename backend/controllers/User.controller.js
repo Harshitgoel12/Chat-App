@@ -33,7 +33,7 @@ const OTPSend=async(req,res)=>{
 const VerifyOTP= async(req,res)=>{
     try {
         const {otp,Email}=req.body;
-        console.log(otp,Email)
+        
          const resp=await OTP.findOne({Email});
         
          if(resp.OTP!=otp){
@@ -121,14 +121,12 @@ const data={
 
 const Search= async(req,res)=>{
     try {
-      
-          
           const user=req.userData.id;
-        
-          const userdata = await User.findById(user); // no need to pass {user}, just user ID
-const { RequestReceived = [], RequestSend = [] } = userdata;
+          const userdata = await User.findById(user); 
+          console.log(userdata);
+const { RequestReceived = [], RequestSend = [], myContacts=[] } = userdata;
 
-const excludedIds = [...RequestReceived, ...RequestSend].map(id => new mongoose.Types.ObjectId(id));
+const excludedIds = [...RequestReceived, ...RequestSend,req.userData.id,...myContacts].map(id => new mongoose.Types.ObjectId(id));
 
 const resp = await User.find({
   _id: { $nin: excludedIds }
@@ -247,7 +245,6 @@ const RequestReceived = async(req,res)=>{
       return res.status(404).json({ success: false, message: "Sender not found" });
     }
 
-    // ✅ Update status to 'Accepted' in sender's RequestSend
     sender.RequestSend = sender.RequestSend.map((request) => {
       if (request.User.toString() === userId) {
         return { ...request.toObject(), Status: "Accepted" };
@@ -368,6 +365,47 @@ try {
  }
 
 
+
+
+
+ const IncommingRequest = async(req,res)=>{
+  try {
+    const userId=req.userData.id;
+    const userdata= await User.findById(userId).populate("RequestReceived");
+    return res.status(200).json({success:true,message:"IncommingRequest fetched successfully", request:userdata.RequestReceived})
+  } catch (error) {
+    console.log("something went wrong while fetching incomming request",error.message);
+  }
+ }
+
+
+
+
+ const SendRequestData  = async(req,res)=>{
+  try {
+      const userId=req.userData.id;
+    const userdata= await User.findById(userId).populate("RequestSend");
+    return res.status(200).json({success:true,message:"IncommingRequest fetched successfully", request:userdata.RequestSend})
+  } catch (error) {
+    console.log("something went wrong ",error.message);
+    return res.status(500).json({success:true,message:"Internal Server Error"});
+  }
+ }
+
+
+ const MyContacts= async(req,res)=>{
+  try {
+      const userId=req.userData.id;
+    const userdata= await User.findById(userId).populate("myContacts");
+    return res.status(200).json({success:true,message:"IncommingRequest fetched successfully", request:userdata.myContacts})
+  } catch (error) {
+    console.log("something went wrong ",error.message);
+    return res.status(500).json({success:true,message:"Internal Server Error"});
+  }
+ }
+
+
+
 module.exports  ={
     OTPSend,
     VerifyOTP,
@@ -380,5 +418,8 @@ module.exports  ={
     RejectRequest,
     ProfileData,
     SaveProfile,
-    Logout
+    Logout,
+    IncommingRequest,
+    SendRequestData,
+    MyContacts
 }

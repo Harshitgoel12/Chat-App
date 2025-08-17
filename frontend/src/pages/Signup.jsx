@@ -12,7 +12,7 @@ const navigate=useNavigate();
     Email:"",
     Password:"",
     ConfirmPassword:"",
-    url:"https://xsgames.co/randomusers/avatar.php?g=male"
+    url:"",
   })
   const handleChange=(e)=>{
     setUserData(prev=>({...prev,[e.target.name]:e.target.value})) 
@@ -20,7 +20,9 @@ const navigate=useNavigate();
 
   const handleSubmit=async (e)=>{
    e.preventDefault();
+   
    try {
+    UserData.url=`https://avatar.iran.liara.run/username?username=[${UserData.Username}]`
     console.log(UserData.url)
      if(UserData.Password!=UserData.ConfirmPassword){
        throw new Error("Incurrect Password")

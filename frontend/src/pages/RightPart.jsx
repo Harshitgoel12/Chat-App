@@ -32,15 +32,10 @@ const RightPart = () => {
     }
   };
 
-  // Add user to socket list
- 
-
-  // Fetch messages on receiver change
   useEffect(() => {
     if (SelectedUser) fetchAllMessages();
   }, [SelectedUser]);
 
-  // Send text message
   const handleSend = async () => {
     if (!input.trim()) return;
 

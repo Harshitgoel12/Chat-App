@@ -48,7 +48,7 @@ const Userschema= new mongoose.Schema({
     url:{
       type:String
     },
-    RequestSend:[
+    myContactsRequestSend:[
       {
       User:{
       type: mongoose.Schema.Types.ObjectId,

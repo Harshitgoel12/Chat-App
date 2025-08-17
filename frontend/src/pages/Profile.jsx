@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { User } from '../slices/User.slice';
@@ -7,18 +7,20 @@ import { User } from '../slices/User.slice';
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [user, setUser] = useState(null);
-  const [Myuser, setMyUser] = useState(null);
-  const [IsCurrentUser, setIsCurrentUser] = useState(false);
-  const [Request, setRequest] = useState(false);
+  const [backupUser, setBackupUser] = useState(null);
+  const [isCurrentUser, setIsCurrentUser] = useState(false);
+  const [requestStatus, setRequestStatus] = useState("Request");
 
   const { id } = useParams();
   const dispatch = useDispatch();
-  let CurrentUser = useSelector(state => state.user.userData);
-  CurrentUser=CurrentUser?CurrentUser:{}
-console.log("current user",CurrentUser)
+  let currentUser = useSelector(state => state.user.userData);
+  currentUser = currentUser || {};
+
   const handleChange = (field, value) => {
     setUser({ ...user, [field]: value });
   };
+
+  
 
   const fetchData = async () => {
     try {
@@ -26,62 +28,74 @@ console.log("current user",CurrentUser)
         withCredentials: true,
       });
       setUser(resp.data.data);
-      setMyUser(resp.data.data);
+      setBackupUser(resp.data.data);
     } catch (error) {
-      console.log("Something went wrong while fetching user data:", error.message);
+      console.log("Error while fetching user data:", error.message);
     }
   };
 
   useEffect(() => {
-    if (CurrentUser?._id === id) {
+    if (currentUser?._id === id) {
       setIsCurrentUser(true);
     }
 
-   
-    
-    CurrentUser?.RequestSend?.map((ele)=>{
-      console.log(ele.User._id);
-      if(ele.User._id==id){
-        setRequest(true);
+    // check friend request / contact status
+    if (currentUser?.RequestSend) {
+      for (let ele of currentUser.RequestSend) {
+        if (ele?.User?._id === id) {
+          setRequestStatus("Pending");
+          break;
+        }
       }
-    })
+    }
+
+    if (currentUser?.myContacts) {
+      for (let ele of currentUser.myContacts) {
+        if (ele?.User?._id === id) {
+          setRequestStatus("Accepted");
+          break;
+        }
+      }
+    }
 
     fetchData();
-    console.log(user?.url)
-  }, []);
+  }, [id, currentUser]);
 
- const handleSave = async () => {
-  try {
-    const resp = await axios.put(`http://localhost:3000/api/v1/SaveProfile/${id}`, user, {
-      withCredentials: true,
-    });
-    
-    localStorage.setItem("Userdata", JSON.stringify(resp.data.data));
-    setIsEditing(false);
-    dispatch(User(resp.data.data));
-    setMyUser(user);
-  } catch (error) {
-    console.log("Error while saving user data:", error.message);
-  }
-};
-
-  const sendFriendRequest = async (id) => {
+  const handleSave = async () => {
     try {
-      const resp = await axios.post(`http://localhost:3000/api/v1/SendFriendRequest/${id}`, {}, {
-        withCredentials: true,
-      });
+      const resp = await axios.put(
+        `http://localhost:3000/api/v1/SaveProfile/${id}`,
+        user,
+        { withCredentials: true }
+      );
 
-      console.log(resp);
-      localStorage.setItem("Userdata",JSON.stringify(resp.data.data));
+      localStorage.setItem("Userdata", JSON.stringify(resp.data.data));
+      setIsEditing(false);
       dispatch(User(resp.data.data));
-      setRequest(true);
+      setBackupUser(user);
     } catch (error) {
-      console.log("Something went wrong while sending the friend request", error.message);
+      console.log("Error while saving user data:", error.message);
+    }
+  };
+
+  const sendFriendRequest = async () => {
+    try {
+      const resp = await axios.post(
+        `http://localhost:3000/api/v1/SendFriendRequest/${id}`,
+        {},
+        { withCredentials: true }
+      );
+    console.log(resp.data.data)
+      localStorage.setItem("Userdata", JSON.stringify(resp.data.data));
+      dispatch(User(resp.data.data));
+      setRequestStatus("Pending");
+    } catch (error) {
+      console.log("Error while sending friend request:", error.message);
     }
   };
 
   const handleCancel = () => {
-    setUser(Myuser);
+    setUser(backupUser);
     setIsEditing(false);
   };
 
@@ -102,12 +116,12 @@ console.log("current user",CurrentUser)
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               {isEditing ? (
                 <input
-                  value={user?.username}
+                  value={user?.username || ""}
                   onChange={(e) => handleChange('username', e.target.value)}
                   className="text-3xl font-bold bg-transparent border-b border-white/30 w-full sm:w-auto focus:outline-none"
                 />
               ) : (
-                <h1 className="text-3xl font-bold">{user?.username} </h1>
+                <h1 className="text-3xl font-bold">{user?.username}</h1>
               )}
 
               {isEditing ? (
@@ -116,15 +130,25 @@ console.log("current user",CurrentUser)
                   <button onClick={handleCancel} className="bg-gray-600 px-4 py-1 rounded">Cancel</button>
                 </div>
               ) : (
-                IsCurrentUser ? (
+                isCurrentUser ? (
                   <button onClick={() => setIsEditing(true)} className="bg-violet-600 px-4 py-1 rounded">Edit</button>
-                ) : (!Request?(<button
-                    className={`w-28 text-sm h-10 text-white rounded-xl  bg-blue-500`}
-                    disabled={Request}
-                    onClick={() => sendFriendRequest(user._id)}>Request
-                   </button>):(
-                    <button className='bg-yellow-500 text-white font-semibold text-md px-2 py-2 rounded-xl '>Pending</button>
-                   )
+                ) : (
+                  requestStatus === "Request" ? (
+                    <button
+                      className="w-28 text-sm h-10 text-white rounded-xl bg-blue-500"
+                      onClick={sendFriendRequest}
+                    >
+                      Request
+                    </button>
+                  ) : requestStatus === "Pending" ? (
+                    <button className="bg-yellow-500 text-white font-semibold text-md px-2 py-2 rounded-xl">
+                      Pending
+                    </button>
+                  ) : (
+                    <button className="bg-green-500 text-white font-semibold text-md px-2 py-2 rounded-xl">
+                      Accepted
+                    </button>
+                  )
                 )
               )}
             </div>
@@ -132,7 +156,7 @@ console.log("current user",CurrentUser)
             <p className="text-white/70 mt-2">
               {isEditing ? (
                 <input
-                  value={user?.email}
+                  value={user?.email || ""}
                   onChange={(e) => handleChange('email', e.target.value)}
                   className="bg-transparent border-b border-white/20 w-full focus:outline-none"
                 />
@@ -166,13 +190,13 @@ const Field = ({ label, value, isEditing, onChange, type = 'text' }) => (
     {isEditing ? (
       type === 'textarea' ? (
         <textarea
-          value={value}
+          value={value || ""}
           onChange={(e) => onChange(e.target.value)}
           className="w-full bg-white/10 mt-1 p-2 rounded resize-none"
         />
       ) : (
         <input
-          value={value}
+          value={value || ""}
           onChange={(e) => onChange(e.target.value)}
           className="w-full bg-white/10 mt-1 p-2 rounded"
         />
@@ -188,7 +212,7 @@ const ListInput = ({ label, list, isEditing, onChange }) => (
     <p className="font-semibold">{label}:</p>
     {isEditing ? (
       <input
-        value={list?.join(', ') || ''}
+        value={list?.join(', ') || ""}
         onChange={(e) => onChange(e.target.value.split(',').map((item) => item.trim()))}
         className="w-full bg-white/10 mt-1 p-2 rounded"
       />

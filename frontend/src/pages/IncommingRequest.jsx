@@ -2,18 +2,25 @@ import axios from 'axios';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { User } from '../slices/User.slice';
+import { useEffect } from 'react';
+import { useState } from 'react';
 
 const IncommingRequest = ({ setIncommingRequest }) => {
-  const dummyUsers = [
-    { name: "Krish", avatar: "https://randomuser.me/api/portraits/men/75.jpg" },
-    { name: "Anjali", avatar: "https://randomuser.me/api/portraits/women/65.jpg" },
-    { name: "Rohit", avatar: "https://randomuser.me/api/portraits/men/85.jpg" },
-    { name: "Simran", avatar: "https://randomuser.me/api/portraits/women/45.jpg" },
-    { name: "Aman", avatar: "https://randomuser.me/api/portraits/men/55.jpg" },
-  ];
-
-  const user = useSelector(state => state.user.userData);
-  const RequestReceived = user?.RequestReceived || [];
+const [RequestReceived,setIncommingReq]=useState([]);
+useEffect(()=>{
+    const IncommingRequest= async()=>{
+            try {
+               const resp= await  axios.get("http://localhost:3000/api/v1/IncommingRequest",{
+                  withCredentials:true
+                 })
+                 console.log("incomming request",resp.data)
+                 setIncommingReq(resp.data.request);
+            } catch (error) {
+              console.log("something went wrong while getting incomming request",error.message);
+            }
+    }
+    IncommingRequest();
+},[])
   const dispatch = useDispatch();
 
   const handleAcceptRequest = async (id) => {
@@ -21,6 +28,7 @@ const IncommingRequest = ({ setIncommingRequest }) => {
       const resp = await axios.post(`http://localhost:3000/api/v1/AcceptRequest/${id}`, {}, {
         withCredentials: true
       });
+      console.log(resp)
       localStorage.setItem("Userdata", JSON.stringify(resp.data.data));
       dispatch(User(resp.data.data));
     } catch (error) {
@@ -60,7 +68,7 @@ const IncommingRequest = ({ setIncommingRequest }) => {
             <div key={idx} className="flex justify-between items-center bg-white rounded-lg shadow p-3 mb-4">
               <div className="flex items-center gap-3">
                 <img
-                  src={dummyUsers[idx % dummyUsers.length].avatar}
+                  src={ele.url}
                   alt="avatar"
                   className="h-12 w-12 rounded-full object-cover"
                 />

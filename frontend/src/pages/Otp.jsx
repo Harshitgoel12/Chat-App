@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import OTPInput from "otp-input-react";
 import axios from "axios"
 import { useSelector } from 'react-redux';
@@ -7,13 +7,10 @@ const Otp = () => {
     const [otp, setOTP] = useState("");
     const navigate=useNavigate();
     const userdata= useSelector(state=>state.user.userData)
-    console.log(userdata)
    const handleSubmit=async(e)=>{
     e.preventDefault();
-   //try {
-     const response= await axios.post("http://localhost:3000/api/v1/opt-verification",{otp,Email:userdata.Email},{
-      withCredentials:true
-     })
+   try {
+     const response= await axios.post("http://localhost:3000/api/v1/opt-verification",{otp,Email:userdata.Email})
  console.log(response)
      if(response.data.success==false){
        throw new Error(response.data.message);
@@ -21,14 +18,13 @@ const Otp = () => {
    const res=await axios.post(" http://localhost:3000/api/v1/signup",userdata,{
     withCredentials:true
    })
-   console.log(res)
  if(res.data.success==false){
   throw new Error(res.data.message);
  }
  navigate("/login")
-  //  } catch (error) {
-  //   console.log("something went wrong while handleing the otp request",error.message)
-  //  }
+   } catch (error) {
+    console.log("something went wrong while handleing the otp request",error.message)
+   }
 
    }
   return (

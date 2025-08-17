@@ -1,18 +1,30 @@
-import React from 'react'
-import { data } from './data'
+
 import { useDispatch, useSelector } from 'react-redux'
 import { SelectedUser } from '../slices/User.slice';
-import socket from '../socket';
-
+import { useEffect } from 'react';
+import axios from 'axios';
+import { useState } from 'react';
 
 const LeftPart = () => {
-  const contacts=useSelector(state=>state.user.userData);
+const [myContacts,setContacts]=useState([]);
+  useEffect(()=>{
+   const fun = async()=>{
+    try {
+       const data=await axios.get("http://localhost:3000/api/v1/MyContacts",{
+        withCredentials:true
+       })
+       console.log("my contacts ",data);
+    setContacts(data.data.request);
+    } catch (error) {
+      console.log("something went wrong while fetching all contacts",error.message);
+    }
+   }
+   fun();
+  },[])
    const Selecteduser = useSelector((state) => state.user.Receiver);
-  const myContacts=contacts?.myContacts
   const dispatch=useDispatch();
   const SelectUserHandler=(id)=>{
     dispatch(SelectedUser(id));
-   
   }
   
   return (

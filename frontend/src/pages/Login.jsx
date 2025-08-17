@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { User } from '../slices/User.slice';
@@ -24,7 +24,6 @@ const Login = () => {
        if(resp.data.success==false){
         throw new Error(resp.data.message);
        }
-       console.log(resp.data.data)
        localStorage.setItem("Userdata",JSON.stringify(resp.data.data));
         dispatch(User(resp.data.data))
        navigate("/");

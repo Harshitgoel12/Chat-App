@@ -1,17 +1,23 @@
+import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-
 const SendedRequest = ({ setSendRequest }) => {
-  const user = useSelector(state => state.user.userData);
-  const requests = user?.RequestSend?.filter(req => req.Status === "Pending") || [];
+  //  const user = useSelector(state => state.user.userData);
+  const [user,setUser]=useState([]);
 
-  const dummyAvatars = [
-    "https://randomuser.me/api/portraits/men/75.jpg",
-    "https://randomuser.me/api/portraits/women/65.jpg",
-    "https://randomuser.me/api/portraits/men/85.jpg",
-    "https://randomuser.me/api/portraits/women/45.jpg",
-    "https://randomuser.me/api/portraits/men/55.jpg",
-  ];
+  useEffect(()=>{
+    const fun = async()=>{
+       const data= await axios.get("http://localhost:3000/api/v1/SendRequest",{
+          withCredentials:true
+        })
+        setUser(data.data.request);
+    }
+    fun();
+  },[])
 
+   const requests = user?.RequestSend?.filter(req => req.Status === "Pending") || [];
+ 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
       <div className="bg-white w-full max-w-md max-h-[80vh] rounded-xl shadow-xl p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-purple-300 scrollbar-track-transparent">
@@ -29,8 +35,8 @@ const SendedRequest = ({ setSendRequest }) => {
           <p className="text-gray-600 text-center mt-10">No pending requests sent.</p>
         ) : (
           requests.map((req, idx) => {
-            const avatar = dummyAvatars[idx % dummyAvatars.length];
-            const username = req?.User?.username || `User ${idx + 1}`;
+           
+            const username = req?.User?.Username || `User ${idx + 1}`;
 
             return (
               <div
@@ -39,7 +45,7 @@ const SendedRequest = ({ setSendRequest }) => {
               >
                 <div className="flex items-center gap-4">
                   <img
-                    src={avatar}
+                    src={req?.User?.url}
                     alt="avatar"
                     className="h-12 w-12 rounded-full object-cover"
                   />

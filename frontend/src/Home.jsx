@@ -1,6 +1,5 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './App.css';
-import Header from './pages/Header';
 import chatImg from './chats.png';
 
 function Home() {
@@ -8,8 +7,6 @@ function Home() {
     <>
       <div className="overflow-x-hidden scrollbar-hide  bg-gradient-to-r from-blue-900 via-black to-purple-900 text-white">
 
-
-        {/* Hero Section */}
         <div className="flex flex-col md:flex-row items-center justify-between px-10 py-16 md:py-24">
           <div className="md:w-1/2 space-y-6">
             <h1 className="text-4xl md:text-6xl font-bold">
@@ -28,7 +25,7 @@ function Home() {
             </div>
           </div>
 
-          {/* Chat Image */}
+         
           <div className="md:w-1/2  mt-20 md:mt-20 flex items-center justify-center">
             <img
               src={chatImg}

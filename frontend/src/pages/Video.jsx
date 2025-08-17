@@ -157,7 +157,6 @@ const Video = () => {
         className="absolute bottom-32 lg:bottom-4 right-4 w-[280px] md:w-[290px]  h-[200px] md:h-auto aspect-video object-cover rounded-xl border-4 border-white shadow-xl z-30"
       />
 
-      {/* Controls */}
       <div className="absolute bottom-6 left-36 md:left-1/2 transform -translate-x-1/2 flex flex-wrap items-center justify-center gap-2 px-4 z-40">
         <button
           onClick={endCall}

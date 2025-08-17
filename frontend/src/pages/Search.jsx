@@ -4,13 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { RxCross1 } from "react-icons/rx";
 
 
-const dummyUsers = [
-  { name: "Krish", avatar: "https://randomuser.me/api/portraits/men/75.jpg" },
-  { name: "Anjali", avatar: "https://randomuser.me/api/portraits/women/65.jpg" },
-  { name: "Rohit", avatar: "https://randomuser.me/api/portraits/men/85.jpg" },
-  { name: "Simran", avatar: "https://randomuser.me/api/portraits/women/45.jpg" },
-  { name: "Aman", avatar: "https://randomuser.me/api/portraits/men/55.jpg" },
-];
+
 
 const Search = ({ onClose }) => {
   const navigate=useNavigate();
@@ -18,10 +12,11 @@ const Search = ({ onClose }) => {
   const [Users,setUsers]=useState([]);
   async function fun(){
   
-   const resp= await axios.post("http://localhost:3000/api/v1/Search/",{},{
+   const resp= await axios.get("http://localhost:3000/api/v1/Search/",{
       withCredentials:true
      })
      setUsers(resp.data.data);
+     console.log(resp.data)
   }
 useEffect(()=>{
     fun();
