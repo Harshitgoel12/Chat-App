@@ -108,7 +108,7 @@ io.on("connection", (socket) => {
 
 
 app.use(cors({
-  origin: process.env.ORIGIN,
+  origin: "*",
   credentials: true,
 }));
 
