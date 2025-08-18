@@ -25,19 +25,16 @@ const Video = () => {
   const [micOn, setMicOn] = useState(true);
   const [callEnded, setCallEnded] = useState(false);
 
-  // ✅ Reset `isCallInitialized` on unmount
   useEffect(() => {
     return () => {
       isCallInitialized.current = false;
     };
   }, []);
 
-  // ✅ Setup Peer and Stream
   useEffect(() => {
     if (isCallInitialized.current || callEnded) return;
     isCallInitialized.current = true;
 
-    // 🧹 Clean old peer connection if any
     if (ConnectionRef.current) {
       ConnectionRef.current.destroy();
       ConnectionRef.current = null;
@@ -85,7 +82,7 @@ const Video = () => {
     });
   }, [caller, callEnded]);
 
-  // ✅ Socket handlers
+  
   useEffect(() => {
     const handleAnswerCall = (data) => {
       ConnectionRef.current?.signal(data.signal);
@@ -110,7 +107,7 @@ const Video = () => {
     };
   }, [stream]);
 
-  // ✅ End call properly
+
   const endCall = () => {
     console.log("Call End Triggered");
 
@@ -162,11 +159,11 @@ const Video = () => {
           onClick={endCall}
           className="bg-red-600 hover:bg-red-700 px-5 py-2 md:px-6 md:py-3 rounded-full text-sm md:text-base font-semibold shadow-lg transition-all duration-200"
         >
-          🔴 End Call
+           End Call
         </button>
 
         <button
-          // Future toggleMic logic
+          
           className="bg-gray-700 hover:bg-gray-600 px-4 py-2 md:px-5 md:py-3 rounded-full text-lg shadow-md transition"
           title={micOn ? 'Mute Mic' : 'Unmute Mic'}
         >
@@ -174,7 +171,7 @@ const Video = () => {
         </button>
 
         <button
-          // Future toggleCamera logic
+          
           className="bg-gray-700 hover:bg-gray-600 px-4 py-2 md:px-5 md:py-3 rounded-full text-lg shadow-md transition"
           title={cameraOn ? 'Turn Off Camera' : 'Turn On Camera'}
         >

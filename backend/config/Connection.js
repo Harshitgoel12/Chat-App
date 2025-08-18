@@ -1,9 +1,10 @@
 const mongoose=require("mongoose");
+require("dotenv").config({})
 
 const ConnectDB=async()=>{
 
    try {
-    const response= await mongoose.connect("mongodb://127.0.0.1:27017/ChatApp");
+    const response= await mongoose.connect(process.env.MONGODB_URI);
     
    } catch (error) {
     console.log("kuch error aa rha hai ",error.message);

@@ -7,12 +7,13 @@ import { RxCross1 } from "react-icons/rx";
 
 
 const Search = ({ onClose }) => {
+  const  VITE_URL= import.meta.env.VITE_API_URL
   const navigate=useNavigate();
   const [query, setQuery] = useState("");
   const [Users,setUsers]=useState([]);
   async function fun(){
   
-   const resp= await axios.get("http://localhost:3000/api/v1/Search/",{
+   const resp= await axios.get(`${VITE_URL}/api/v1/Search/`,{
       withCredentials:true
      })
      setUsers(resp.data.data);
@@ -24,8 +25,6 @@ useEffect(()=>{
   const filteredUsers = Users?.filter((user) =>
     user.Username.toLowerCase().includes(query.toLowerCase())
   );
-  console.log("ye rhe filtered user ",filteredUsers)
-
 
   const handleNavigation=(id)=>{
     navigate("/Profile/"+id)

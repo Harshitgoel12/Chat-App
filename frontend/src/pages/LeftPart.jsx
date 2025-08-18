@@ -4,19 +4,21 @@ import { SelectedUser } from '../slices/User.slice';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const LeftPart = () => {
+  const  VITE_URL= import.meta.env.VITE_API_URL
 const [myContacts,setContacts]=useState([]);
   useEffect(()=>{
    const fun = async()=>{
     try {
-       const data=await axios.get("http://localhost:3000/api/v1/MyContacts",{
+       const data=await axios.get(`${VITE_URL}/MyContacts`,{
         withCredentials:true
        })
-       console.log("my contacts ",data);
     setContacts(data.data.request);
     } catch (error) {
       console.log("something went wrong while fetching all contacts",error.message);
+      toast.error("Can't Fetched Contacts")
     }
    }
    fun();
@@ -28,7 +30,7 @@ const [myContacts,setContacts]=useState([]);
   }
   
   return (
-    <div className={`w-screen md:w-1/3 ${Selecteduser?"md:flex hidden ":""} scrollbar-hide md:mt-12 mt-20 min-h-screen`}>
+    <div className={`w-screen md:w-2/3 ${Selecteduser?"md:flex hidden ":""} scrollbar-hide mt-12  min-h-screen`}>
       <div className='w-full min-h-screen bg-transparent shadow-xl shadow-amber-400 backdrop-blur-sm  '>
       <div className='w-full'>
        

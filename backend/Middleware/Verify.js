@@ -1,15 +1,16 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
+require("dotenv").config();
 
 const verify = async (req, res, next) => {
   try {
-    const token = req.cookies.token || req.body.token ;
+    const token = req.cookies?.token || req.body?.token ;
         
     if (!token) {
       return res.status(401).json({ success: false, message: "Token is not present" });
     }
 
-    const decodedToken = jwt.verify(token, "asdfajkshdgkajshdgkjxcmvbsdgsaf");
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
     if (!decodedToken || !decodedToken.data?.id) {
       return res.status(401).json({ success: false, message: "Invalid Token" });

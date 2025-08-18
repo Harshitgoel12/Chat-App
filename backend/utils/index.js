@@ -6,15 +6,16 @@ const cookieParser = require("cookie-parser");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { UserConnected, UserDisconnected } = require("./lib");
+require("dotenv").config();
 
 const app = express();
 const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", 
+    origin: process.env.ORIGIN, 
     credentials: true,
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST","PUT","PATCH","DELETE"],
   },
 });
 
@@ -22,19 +23,16 @@ const onlineUsers = new Map();
 
 
 io.on("connection", (socket) => {
-  console.log(" New socket connected:", socket.id);
 
   socket.on("add-user", (userId) => {
     socket.userId = userId;
     onlineUsers.set(userId, socket.id);
     UserConnected(socket.id, userId); 
-    console.log(` User ${userId} added to online list`);
+  
   });
 
   socket.on("CallToUser",(data)=>{
     const socketId=onlineUsers.get(data.CallToUser);
-    console.log(onlineUsers)
-    console.log("callto user id",socketId);
     if(socketId){
     io.to(socketId).emit("CallToUser",{
         signal:data.signal,
@@ -110,7 +108,7 @@ io.on("connection", (socket) => {
 
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: process.env.ORIGIN,
   credentials: true,
 }));
 

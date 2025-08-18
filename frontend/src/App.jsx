@@ -10,6 +10,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import ReceivceCall from './pages/ReceivceCall';
 import { Caller } from './slices/ReceiveCall.slice';
 import Footer from './pages/Footer';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function App() {
   const dispatch= useDispatch();
 const myuser = useSelector((state) => state.user.userData);
@@ -37,6 +40,18 @@ return ()=>{
 
   return (
     <>
+    <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={true}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+  theme="colored"
+/>
     <div className='image overflow-x-hidden scrollbar-hide  w-screen h-screen'>
       <Header/>
      <Outlet/>

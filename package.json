@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "process": "^0.11.10"
+    "process": "^0.11.10",
+    "react-toastify": "^11.0.5"
   }
 }

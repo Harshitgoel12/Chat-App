@@ -3,19 +3,22 @@ import OTPInput from "otp-input-react";
 import axios from "axios"
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 const Otp = () => {
+  const  VITE_URL= import.meta.env.VITE_API_URL
     const [otp, setOTP] = useState("");
     const navigate=useNavigate();
     const userdata= useSelector(state=>state.user.userData)
    const handleSubmit=async(e)=>{
     e.preventDefault();
    try {
-     const response= await axios.post("http://localhost:3000/api/v1/opt-verification",{otp,Email:userdata.Email})
+     const response= await axios.post(`${VITE_URL}/opt-verification`,{otp,Email:userdata.Email})
  console.log(response)
      if(response.data.success==false){
        throw new Error(response.data.message);
      }
-   const res=await axios.post(" http://localhost:3000/api/v1/signup",userdata,{
+     toast.success("OTP Verified Successfully")
+   const res=await axios.post(`${VITE_URL}/signup`,userdata,{
     withCredentials:true
    })
  if(res.data.success==false){
@@ -24,12 +27,13 @@ const Otp = () => {
  navigate("/login")
    } catch (error) {
     console.log("something went wrong while handleing the otp request",error.message)
+    toast.error(error.message)
    }
 
    }
   return (
-    <div className='w-full  flex justify-center md:mt-32 mt-20  md:ms-20 overflow-x-hidden'>
-      <div className="flex flex-col rounded-xl items-center bg-transparent shadow-2xl pb-5 px-5 shadow-amber-400">
+    <div className='w-full  h-screen flex justify-center md:items-start items-center  md:mt-40 mt-20  md:ms-20 overflow-x-hidden'>
+      <div className="flex  h-1/ flex-col rounded-xl items-center  bg-transparent shadow-2xl pb-5 px-5 shadow-amber-400">
         <h1 className='text-white text-center font-bold text-3xl mb-4 '>Verify OTP</h1>
      <OTPInput
   value={otp}
@@ -38,9 +42,9 @@ const Otp = () => {
   OTPLength={4}
   otpType="number"
   secure={false}
-  className="flex gap-4"
+  className="flex gap-2"
   inputStyles={{
-    width: "60px",
+    width: "54px",
     height: "60px",
     fontSize: "28px",
     borderRadius: "12px",

@@ -7,8 +7,10 @@ import axios from "axios";
 import SendedRequest from "./SendedRequest";
 import IncommingRequestPage from "./IncommingRequest.jsx";
 import { Menu, X } from "lucide-react";
+import { toast } from "react-toastify";
 
 const Header = () => {
+  const  VITE_URL= import.meta.env.VITE_API_URL
   const [showSearchModal, setSearchModal] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sendRequest, setSendRequest] = useState(false);
@@ -20,13 +22,15 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.get("http://localhost:3000/api/v1/Logout", {
+      await axios.get(`${VITE_URL}/Logout`, {
         withCredentials: true,
       });
+      toast.success("Logout Successfully")
       localStorage.removeItem("Userdata");
       dispatch(User(null));
     } catch (err) {
       console.error("Logout failed:", err.message);
+      toast.error(err.message);
     }
   };
 
@@ -41,7 +45,7 @@ const Header = () => {
           ChatApp
         </Link>
 
-        <nav className="hidden md:flex gap-5 text-lg font-medium items-center">
+        <nav className="hidden lg:flex gap-5 text-lg font-medium items-center">
            <Link
           to="/"
           className="hover:text-yellow-300 transition"
@@ -100,7 +104,7 @@ const Header = () => {
               )}
             </>
           ) : (
-            <div className="hidden md:flex gap-4">
+            <div className="hidden lg:flex gap-4">
               <Link
                 to="/login"
                 className="hover:text-yellow-300 text-lg font-semibold"
@@ -118,7 +122,7 @@ const Header = () => {
 
         
           <button
-            className="md:hidden text-white"
+            className="lg:hidden text-white"
             onClick={() => setMobileMenu(!mobileMenu)}
           >
             {mobileMenu ? <X size={28} /> : <Menu size={28} />}
@@ -127,7 +131,7 @@ const Header = () => {
       </div>
 
       {mobileMenu && (
-        <div className="md:hidden mt-3 bg-white text-black rounded-xl shadow-md p-4 space-y-3 animate-slideDown">
+        <div className="lg:hidden mt-3 bg-white text-black rounded-xl shadow-md p-4 space-y-3 animate-slideDown">
           <Link
             to="/"
             onClick={() => setMobileMenu(false)}

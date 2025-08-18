@@ -1,14 +1,13 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 const SendedRequest = ({ setSendRequest }) => {
-  //  const user = useSelector(state => state.user.userData);
+const  VITE_URL= import.meta.env.VITE_API_URL
   const [user,setUser]=useState([]);
 
   useEffect(()=>{
     const fun = async()=>{
-       const data= await axios.get("http://localhost:3000/api/v1/SendRequest",{
+       const data= await axios.get(`${VITE_URL}/SendRequest`,{
           withCredentials:true
         })
         setUser(data.data.request);

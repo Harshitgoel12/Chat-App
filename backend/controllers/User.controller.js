@@ -4,15 +4,14 @@ const User=require("../models/user.model.js")
 const sendMail=require("../utils/sendMail")
 const bcrypt=require("bcrypt");
 const jwt=require("jsonwebtoken");
+require("dotenv").config();
 
 const OTPSend=async(req,res)=>{
     try {
        const {Email}=req.body;
-      console.log("email aa gya",Email)
        if(!Email){
         return res.status(401).json({success:false,message:"Email is required"});
        } 
-    console.log("ab user check krte hai",User)
          const response= await User.findOne({Email});
        
          if(response){
@@ -20,7 +19,7 @@ const OTPSend=async(req,res)=>{
          }
          const otp= Math.floor(1000 + Math.random() * 9000);
         
-         const result = await sendMail(Email,"Verify OTP",otp,"please verify your self");
+          await sendMail(Email,"Verify OTP",otp,"please verify your self");
            const ans=await OTP.create({OTP:otp,Email});
          return res.status(200).json({success:true,message:"OTP send Successfully"});
 
@@ -50,8 +49,6 @@ const VerifyOTP= async(req,res)=>{
 const signup=async(req,res)=>{
     try {
       const{Username,Email,Password,url}  =req.body;
-      console.log(url);
-      console.log(Username,Email,Password);
       if(!Username||!Email||!Password){
         return res.status(401).json({success:false,message:"All the fields  are required"});
       }
@@ -63,7 +60,6 @@ const signup=async(req,res)=>{
      const data= await User.create({
         Username,Email,Password,url
       })
-console.log("sb theek hia ",data)
       return res.status(200).json({success:true,message:"User Registered Successfully"});
 
     } catch (error) {
@@ -80,9 +76,7 @@ const Login= async(req,res)=>{
         if(!Email||!Password){
             return res.status(401).json({success:false,message:"All field are required"});
         }
-        console.log("yha tk bhi theek hai")
         const response=await User.findOne({Email});
-        console.log("aa gye hmm aa gye")
         if(!response){
             return res.status(401).json({success:false,message:"User is not Registered"});
         }
@@ -97,7 +91,7 @@ const data={
     id:response._id,
     Username:response.Username,
 }
-        const token= jwt.sign({data},"asdfajkshdgkajshdgkjxcmvbsdgsaf",{
+        const token= jwt.sign({data},process.env.JWT_SECRET,{
             expiresIn:"2d",
         })
 
@@ -108,7 +102,7 @@ const data={
         httpOnly: true,
         secure: false, 
         sameSite: "lax",
-        maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days
+        maxAge: 2 * 24 * 60 * 60 * 1000, 
       }).json({success:true,message:"User Login Successfully",data:response});
 
     } catch (error) {
@@ -123,7 +117,6 @@ const Search= async(req,res)=>{
     try {
           const user=req.userData.id;
           const userdata = await User.findById(user); 
-          console.log(userdata);
 const { RequestReceived = [], RequestSend = [], myContacts=[] } = userdata;
 
 const excludedIds = [...RequestReceived, ...RequestSend,req.userData.id,...myContacts].map(id => new mongoose.Types.ObjectId(id));
@@ -135,7 +128,7 @@ const resp = await User.find({
             return ele._id!=user
          })
            
-        return res.status(200).json({success:true,message:"UserFetched Successfully",data:val});
+        return res.status(200).json({success:true,message:"User Fetched Successfully",data:val});
     } catch (error) {
         console.log("something went wrong while searching user",error.message);
         return res.status(500).json({success:false,message:"Internal Server Error"});
@@ -164,10 +157,15 @@ const SendRequest = async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
+    if(user.myContacts.includes(id)){
+      return res.status(401).json({success:false,message:"Already is in your contact list"});
+    }
+
 
     const alreadySent = user.RequestSend.some(
       (req) => req.User.toString() === id && req.Status === "Pending"
     );
+
     if (alreadySent) {
       return res.status(401).json({ success: false, message: "Request is already being sent" });
     }
@@ -232,6 +230,9 @@ const RequestReceived = async(req,res)=>{
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
+    if(user.myContacts.includes(id)){
+return res.status(401).json({success:false,message:"Already is in your contact"})
+    }
 
     user.RequestReceived = user.RequestReceived.filter(
       (ele) => ele.toString() !== id
@@ -275,8 +276,6 @@ const RejectRequest = async (req, res) => {
   try {
     const userId = req.userData.id;
     const { id } = req.params;
-
-    // Find sender user (who sent the request)
     const sender = await User.findById(id);
     if (!sender) {
       return res.status(401).json({ success: false, message: "Invalid sender details" });

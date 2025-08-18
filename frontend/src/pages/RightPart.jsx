@@ -6,8 +6,10 @@ import socket from '../socket';
 import DefaultPage from './DefaultPage';
 import { useNavigate } from 'react-router-dom';
 import Peer from "simple-peer"
+import { toast } from 'react-toastify';
 
 const RightPart = () => {
+  const  VITE_URL= import.meta.env.VITE_API_URL
   const myuser = useSelector((state) => state.user.userData);
   const myID = myuser?._id;
   const SelectedUser = useSelector((state) => state.user.Receiver);
@@ -22,13 +24,14 @@ const RightPart = () => {
   const fetchAllMessages = async () => {
     try {
       const resp = await axios.get(
-        `http://localhost:3000/api/v1/Fetch-Chats/${SelectedUser?._id}`,
+        `${VITE_URL}/Fetch-Chats/${SelectedUser?._id}`,
         { withCredentials: true }
       );
       if (!resp.data.success) throw new Error(resp.data.message);
       setMessages(resp.data.data);
     } catch (error) {
       console.log('Error fetching messages:', error.message);
+      toast.error("Can't Fetched Chats")
     }
   };
 
@@ -41,7 +44,7 @@ const RightPart = () => {
 
     try {
       const resp = await axios.post(
-        `http://localhost:3000/api/v1/Send-Message/${SelectedUser._id}`,
+        `${VITE_URL}/Send-Message/${SelectedUser._id}`,
         { message: input },
         { withCredentials: true }
       );
@@ -87,7 +90,7 @@ const RightPart = () => {
 
     try {
       const resp = await axios.post(
-        `http://localhost:3000/api/v1/Send-File/${SelectedUser._id}`,
+        `${VITE_URL}/Send-File/${SelectedUser._id}`,
         formData,
         {
           withCredentials: true,
@@ -136,7 +139,7 @@ const handleCall=()=>{
 
 
   return (
-    <div className="fixed md:top-12 top-20 right-0 w-full md:w-[66.5%] h-[calc(100vh-3rem)] bg-cover bg-center overflow-hidden">
+    <div className="fixed top-12  right-0 w-full md:w-[66.5%] h-[calc(100vh-3rem)] bg-cover bg-center overflow-hidden">
       <div className="w-full h-full flex flex-col justify-between p-4 md:p-6 backdrop-blur-sm bg-white/10 rounded-l-xl shadow-inner shadow-black/30">
         
         

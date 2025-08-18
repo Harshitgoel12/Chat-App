@@ -3,8 +3,10 @@ import  { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { User } from '../slices/User.slice';
+import { toast } from 'react-toastify';
 
 const Login = () => {
+   const  VITE_URL= import.meta.env.VITE_API_URL
   const navigate=useNavigate();
   const dispatch=useDispatch();
   const [LoginData,setLoginData]=useState({
@@ -18,23 +20,25 @@ const Login = () => {
   const handleSubmit=async(e)=>{
     e.preventDefault();
     try {
-       const resp=await axios.post("http://localhost:3000/api/v1/Login",LoginData,{
+       const resp=await axios.post(`${VITE_URL}/Login`,LoginData,{
         withCredentials:true
        })
        if(resp.data.success==false){
         throw new Error(resp.data.message);
        }
+       toast.success(resp.data.message);
        localStorage.setItem("Userdata",JSON.stringify(resp.data.data));
         dispatch(User(resp.data.data))
        navigate("/");
        
     } catch (error) {
       console.log("something went wrong while attampting to login",error.message);
+      toast.error(error.message)
     }
   }
   return (
     <div className='h-full w-full flex items-center justify-center'>
-      <div className='bg-transparent lg:w-1/3  md:w-1/2 w-3/4 px-4 py-4 min-h-1/2 backdrop-blur-sm rounded-xl shadow-gray-900 shadow-2xl '>
+      <div className='bg-transparent lg:w-1/3  md:w-1/2 w-3/4 px-4 py-4 min-h-1/3 backdrop-blur-sm rounded-xl shadow-gray-900 shadow-2xl '>
       <h1 className='text-white text-2xl  mt-4 font-bold font-sans text-center '>Login</h1>
       <form action="" className='flex flex-col items-center'> 
       <input type="email" placeholder='Enter Email ID' value={LoginData.Email} onChange={handleChange} required name='Email'className='w-11/12 outline-none h-12 text-black rounded-xl px-3 mt-5 bg-gray-50'/>

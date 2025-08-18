@@ -3,8 +3,10 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { User } from '../slices/User.slice';
+import { toast } from 'react-toastify';
 
 const Profile = () => {
+  const  VITE_URL= import.meta.env.VITE_API_URL
   const [isEditing, setIsEditing] = useState(false);
   const [user, setUser] = useState(null);
   const [backupUser, setBackupUser] = useState(null);
@@ -20,17 +22,39 @@ const Profile = () => {
     setUser({ ...user, [field]: value });
   };
 
-  
+ 
 
   const fetchData = async () => {
     try {
-      const resp = await axios.get(`http://localhost:3000/api/v1/Profile/${id}`, {
+      const resp = await axios.get(`${VITE_URL}/Profile/${id}`, {
         withCredentials: true,
       });
+      console.log("user profile is ",resp.data.data)
       setUser(resp.data.data);
+       
+    if (user?.RequestSend) {
+      for (let ele of user.RequestSend) {
+        if (ele === currentUser._id) {
+            setRequestStatus("Pending")
+          break;
+        }
+      }
+    }
+     if (user?.myContacts) {
+      console.log("id is ",user.myContacts)
+      for (let ele of user.myContacts) {
+        
+        if (ele === currentUser._id) {
+          
+            setRequestStatus("Accepted")
+          break;
+        }
+      }
+    }
       setBackupUser(resp.data.data);
     } catch (error) {
       console.log("Error while fetching user data:", error.message);
+      toast.error(error.message)
     }
   };
 
@@ -43,54 +67,51 @@ const Profile = () => {
     if (currentUser?.RequestSend) {
       for (let ele of currentUser.RequestSend) {
         if (ele?.User?._id === id) {
-          setRequestStatus("Pending");
+         
           break;
         }
       }
     }
-
-    if (currentUser?.myContacts) {
-      for (let ele of currentUser.myContacts) {
-        if (ele?.User?._id === id) {
-          setRequestStatus("Accepted");
-          break;
-        }
-      }
-    }
+ 
+  
 
     fetchData();
-  }, [id, currentUser]);
+
+
+  }, []);
 
   const handleSave = async () => {
     try {
       const resp = await axios.put(
-        `http://localhost:3000/api/v1/SaveProfile/${id}`,
+        `${VITE_URL}/SaveProfile/${id}`,
         user,
         { withCredentials: true }
       );
-
+   toast.success("Profie Saved Successfully")
       localStorage.setItem("Userdata", JSON.stringify(resp.data.data));
       setIsEditing(false);
       dispatch(User(resp.data.data));
       setBackupUser(user);
     } catch (error) {
       console.log("Error while saving user data:", error.message);
+      toast.error(error.message)
     }
   };
 
   const sendFriendRequest = async () => {
     try {
       const resp = await axios.post(
-        `http://localhost:3000/api/v1/SendFriendRequest/${id}`,
+        `${VITE_URL}/SendFriendRequest/${id}`,
         {},
         { withCredentials: true }
       );
-    console.log(resp.data.data)
+         toast.success("Friend Request Send Successfully")
       localStorage.setItem("Userdata", JSON.stringify(resp.data.data));
       dispatch(User(resp.data.data));
       setRequestStatus("Pending");
     } catch (error) {
       console.log("Error while sending friend request:", error.message);
+      toast.error(error.message);
     }
   };
 

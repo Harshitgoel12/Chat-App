@@ -4,16 +4,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { User } from '../slices/User.slice';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const IncommingRequest = ({ setIncommingRequest }) => {
+  const  VITE_URL= import.meta.env.VITE_API_URL
 const [RequestReceived,setIncommingReq]=useState([]);
 useEffect(()=>{
     const IncommingRequest= async()=>{
             try {
-               const resp= await  axios.get("http://localhost:3000/api/v1/IncommingRequest",{
+               const resp= await  axios.get(`${VITE_URL}/IncommingRequest`,{
                   withCredentials:true
                  })
-                 console.log("incomming request",resp.data)
                  setIncommingReq(resp.data.request);
             } catch (error) {
               console.log("something went wrong while getting incomming request",error.message);
@@ -25,30 +26,31 @@ useEffect(()=>{
 
   const handleAcceptRequest = async (id) => {
     try {
-      const resp = await axios.post(`http://localhost:3000/api/v1/AcceptRequest/${id}`, {}, {
+      const resp = await axios.post(`${VITE_URL}/AcceptRequest/${id}`, {}, {
         withCredentials: true
       });
       dispatch(User(resp.data.data));
       localStorage.setItem("Userdata", JSON.stringify(resp.data.data));
-      console.log(resp.data.data)
-     // setIncommingReq(resp.data.data.IncommingRequest)
-      
+     setIncommingReq(resp.data.data.RequestReceived)
+      toast.success("Request Accepted Successfully");
     } catch (error) {
       console.log("Error accepting request:", error.message);
+      toast.error(error.message);
     }
   };
 
   const handleRejectRequest = async (id) => {
     try {
-      const resp = await axios.post(`http://localhost:3000/api/v1/RejectRequest/${id}`, {}, {
+      const resp = await axios.post(`${VITE_URL}/RejectRequest/${id}`, {}, {
         withCredentials: true
       });
       localStorage.setItem("Userdata", JSON.stringify(resp.data.data));
       dispatch(User(resp.data.data));
-      console.log(resp.data.data)
-      // setIncommingReq(resp.data.data)
+      toast.success("Request Rejected Successfully");
+       setIncommingReq(resp.data.data.RequestReceived)
     } catch (error) {
       console.log("Error rejecting request:", error.message);
+      toast.error(error.message);
     }
   };
 

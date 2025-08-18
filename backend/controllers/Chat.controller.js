@@ -16,8 +16,6 @@ const  SendMessage=async(req,res)=>{
      let existingConversation = await Conversation.findOne({
   participants: { $all: [Id,id] }
 });
-console.log(existingConversation)
-let conversation;
 if(!existingConversation){
       existingConversation = new Conversation({
       participants: [Id,id],
@@ -26,7 +24,6 @@ if(!existingConversation){
 
     await existingConversation.save();
 }
-console.log(existingConversation);
 existingConversation.ConversationData.push(resp);
 await existingConversation.save();
 
@@ -61,6 +58,7 @@ if(!existingConversation){
 
 } catch (error) {
     console.log("something went wrong while fetching user data",error.message);
+    return res.status(500).json({success:false,message:"Internal server error"});
 }
 }
 
@@ -74,7 +72,7 @@ const UploadFile=async(req,res)=>{
         const Id=req.userData.id;
         const {id}=req.params;
         const file=req.file;
-        console.log("file ye rhi ",file)
+      
         if(!file){
             return res.status(401).json({success:false,message:"file is not present"});
         }
@@ -82,7 +80,7 @@ const UploadFile=async(req,res)=>{
             return res.status(401).json({success:false,message:"Invalid User"});
         }
         const resp=await cloudinary.uploader.upload(file.path);
-        console.log("ye rha response ",resp)
+       
 
         const data=await Message.create({
             senderId:Id,receiverId:id,file:resp.secure_url,fileType:resp.format
