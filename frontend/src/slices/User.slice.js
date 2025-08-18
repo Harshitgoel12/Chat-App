@@ -10,7 +10,6 @@ const UserData=createSlice({
     initialState,
     reducers:{
         User:(state,action)=>{
-             console.log("Dispatch payload:", action.payload); // Debug
             state.userData=action.payload;
         },
         SelectedUser:(state,action)=>{

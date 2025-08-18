@@ -28,9 +28,11 @@ useEffect(()=>{
       const resp = await axios.post(`http://localhost:3000/api/v1/AcceptRequest/${id}`, {}, {
         withCredentials: true
       });
-      console.log(resp)
-      localStorage.setItem("Userdata", JSON.stringify(resp.data.data));
       dispatch(User(resp.data.data));
+      localStorage.setItem("Userdata", JSON.stringify(resp.data.data));
+      console.log(resp.data.data)
+     // setIncommingReq(resp.data.data.IncommingRequest)
+      
     } catch (error) {
       console.log("Error accepting request:", error.message);
     }
@@ -43,6 +45,8 @@ useEffect(()=>{
       });
       localStorage.setItem("Userdata", JSON.stringify(resp.data.data));
       dispatch(User(resp.data.data));
+      console.log(resp.data.data)
+      // setIncommingReq(resp.data.data)
     } catch (error) {
       console.log("Error rejecting request:", error.message);
     }

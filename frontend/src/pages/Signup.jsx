@@ -22,7 +22,7 @@ const navigate=useNavigate();
    e.preventDefault();
    
    try {
-    UserData.url=`https://avatar.iran.liara.run/username?username=[${UserData.Username}]`
+    UserData.url=`https://avatar.iran.liara.run/username?username=${UserData.Username}`
     console.log(UserData.url)
      if(UserData.Password!=UserData.ConfirmPassword){
        throw new Error("Incurrect Password")

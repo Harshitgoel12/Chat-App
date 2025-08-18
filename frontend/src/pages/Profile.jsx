@@ -39,7 +39,7 @@ const Profile = () => {
       setIsCurrentUser(true);
     }
 
-    // check friend request / contact status
+    
     if (currentUser?.RequestSend) {
       for (let ele of currentUser.RequestSend) {
         if (ele?.User?._id === id) {
