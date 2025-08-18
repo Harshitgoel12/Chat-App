@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import ReceivceCall from './pages/ReceivceCall';
 import { Caller } from './slices/ReceiveCall.slice';
 import Footer from './pages/Footer';
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
