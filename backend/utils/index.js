@@ -13,7 +13,7 @@ const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.ORIGIN, 
+    origin: "*", 
     credentials: true,
     methods: ["GET", "POST","PUT","PATCH","DELETE"],
   },
