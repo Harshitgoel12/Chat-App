@@ -5,13 +5,14 @@ import scrollbarHide from 'tailwind-scrollbar-hide';
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
+    "./index.html", // <- ye mat bhulna
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {},
   },
   plugins: [
-    scrollbar,
-    scrollbarHide
+    scrollbar(),      // <- function call
+    scrollbarHide()   // <- function call
   ],
 };
