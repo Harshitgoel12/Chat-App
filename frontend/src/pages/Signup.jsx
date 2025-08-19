@@ -4,7 +4,8 @@ import {useDispatch} from "react-redux"
 import { User } from '../slices/User.slice';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { RotatingLines } from 'react-loader-spinner';
+import ClipLoader from "react-spinners/ClipLoader";
+
 
 
 const Signup = () => {
@@ -58,25 +59,18 @@ const navigate=useNavigate();
       <input type="password" placeholder='Enter Password' value={UserData.Password} required name='Password' onChange={handleChange} className='w-11/12 outline-none h-12 text-black rounded-xl px-3 mt-4 bg-gray-50'/>
       <input type="password"  placeholder='Confirm Password' value={UserData.ConfirmPassword} required onChange={handleChange} name='ConfirmPassword'className='w-11/12 outline-none h-12 text-black rounded-xl px-3 mt-4 bg-gray-50'/>
       <button onClick={handleSubmit} type='submit' className='bg-blue-500 text-white h-10 rounded-lg  w-11/12 outline-none mt-5 font-bold text-lg'
-      disabled={loading}>{loading?
-            (
-        <div className='flex gap-4 w-full  justify-center text-center'>
-              <RotatingLines
-        visible={true}
-        height="30"
-        width="35"
-        color="#3B82F6"
-        strokeWidth="5"
-        animationDuration="0.75"
-        ariaLabel="rotating-lines-loading"
-        wrapperStyle={{}}
-        wrapperClass=""
-        />
-        <p>
-              Sign Up
-              </p>
-            </div>
-            ):"Sign Up"}</button>
+      disabled={loading}>{loading ? (
+  <div className="flex gap-4 w-full justify-center items-center text-center">
+    <ClipLoader
+      size={35} // spinner ka size
+      color="#3B82F6" // tailwind blue-500
+      loading={true}
+    />
+    <p>Sign Up</p>
+  </div>
+) : (
+  "Sign Up"
+)}</button>
       </form>
       <h1 className='text-center text-gray-200 mt-2  text-sm'>Already Have Account ? <Link to={'/login'}>Login</Link></h1>
       </div>
