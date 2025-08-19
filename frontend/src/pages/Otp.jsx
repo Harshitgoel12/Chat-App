@@ -4,7 +4,7 @@ import axios from "axios"
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { RotatingLines } from 'react-loader-spinner';
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Otp = () => {
   const  VITE_URL= import.meta.env.VITE_API_URL
@@ -63,25 +63,18 @@ const Otp = () => {
 />
 <button className='text-white self-end mt-5 bg-blue-400 px-3 py-2 font-semibold text-md rounded-xl cursor-pointer' onClick={handleSubmit}
 disabled={loading}
->{loading?
-      (
-  <div className='flex gap-4 w-full  justify-center text-center'>
-        <RotatingLines
-  visible={true}
-  height="20"
-  width="25"
-  color="#3B82F6"
-  strokeWidth="5"
-  animationDuration="0.75"
-  ariaLabel="rotating-lines-loading"
-  wrapperStyle={{}}
-  wrapperClass=""
-  />
-  <p>
-        Sign in
-        </p>
-      </div>
-      ):"Sign in"}</button>
+>{loading ? (
+  <div className="flex gap-4 w-full justify-center items-center text-center">
+    <ClipLoader
+      size={35} // spinner ka size
+      color="#3B82F6" // tailwind blue-500
+      loading={true}
+    />
+    <p>submiting</p>
+  </div>
+) : (
+  "Submit"
+)}</button>
     </div>
     </div>
   )

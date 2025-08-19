@@ -4,8 +4,7 @@ import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { User } from '../slices/User.slice';
 import { toast } from 'react-toastify';
-import { RotatingLines } from 'react-loader-spinner';
-
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Login = () => {
    const  VITE_URL= import.meta.env.VITE_API_URL
@@ -51,25 +50,18 @@ const Login = () => {
       <input type="email" placeholder='Enter Email ID' value={LoginData.Email} onChange={handleChange} required name='Email'className='w-11/12 outline-none h-12 text-black rounded-xl px-3 mt-5 bg-gray-50'/>
       <input type="password" placeholder='Enter Password' value={LoginData.Password} required onChange={handleChange} name='Password' className='w-11/12 outline-none h-12 text-black rounded-xl px-3 mt-5 bg-gray-50'/>
       <button type='submit' onClick={handleSubmit} className='bg-blue-500 text-white h-10 rounded-lg  text-center w-11/12 outline-none mt-6 font-bold text-lg' disabled={loading}>
-      {loading?
-      (
-  <div className='flex gap-4 w-full  justify-center text-center'>
-        <RotatingLines
-  visible={true}
-  height="30"
-  width="35"
-  color="#3B82F6"
-  strokeWidth="5"
-  animationDuration="0.75"
-  ariaLabel="rotating-lines-loading"
-  wrapperStyle={{}}
-  wrapperClass=""
-  />
-  <p>
-        Sign in
-        </p>
-      </div>
-      ):"Sign in"}</button>
+      {loading ? (
+  <div className="flex gap-4 w-full justify-center items-center text-center">
+    <ClipLoader
+      size={35} // spinner ka size
+      color="#3B82F6" // tailwind blue-500
+      loading={true}
+    />
+    <p>Sign in</p>
+  </div>
+) : (
+  "Sing in"
+)}</button>
       </form>
       <h1 className='text-center text-gray-200 mt-2 text-sm'>Do'nt Have Account ? <Link to={"/signup"} >
       Signup</Link></h1>
