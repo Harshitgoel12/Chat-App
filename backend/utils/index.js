@@ -13,7 +13,7 @@ const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "*", 
+    origin:process.env.ORIGIN , 
     credentials: true,
     methods: ["GET", "POST","PUT","PATCH","DELETE"],
   },
@@ -108,7 +108,7 @@ io.on("connection", (socket) => {
 
 
 app.use(cors({
-  origin: "*",
+  origin:process.env.ORIGIN ,
   credentials: true,
 }));
 
