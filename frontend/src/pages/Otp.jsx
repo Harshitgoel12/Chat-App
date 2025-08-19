@@ -7,11 +7,13 @@ import { toast } from 'react-toastify';
 const Otp = () => {
   const  VITE_URL= import.meta.env.VITE_API_URL
     const [otp, setOTP] = useState("");
+    const[loading,setLoading]=useState(false);
     const navigate=useNavigate();
     const userdata= useSelector(state=>state.user.userData)
    const handleSubmit=async(e)=>{
     e.preventDefault();
    try {
+    setLoading(true)
      const response= await axios.post(`${VITE_URL}/opt-verification`,{otp,Email:userdata.Email})
  console.log(response)
      if(response.data.success==false){
@@ -28,6 +30,9 @@ const Otp = () => {
    } catch (error) {
     console.log("something went wrong while handleing the otp request",error.message)
     toast.error(error.message)
+   }
+   finally{
+    setLoading(false)
    }
 
    }
@@ -54,7 +59,9 @@ const Otp = () => {
     
   }}
 />
-<button className='text-white self-end mt-5 bg-blue-400 px-3 py-2 font-semibold text-md rounded-xl' onClick={handleSubmit}>Submit</button>
+<button className='text-white self-end mt-5 bg-blue-400 px-3 py-2 font-semibold text-md rounded-xl cursor-pointer' onClick={handleSubmit}
+disabled={loading}
+>{loading?"Submiting...":"Submit"}</button>
     </div>
     </div>
   )

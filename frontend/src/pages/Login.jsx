@@ -13,6 +13,7 @@ const Login = () => {
     Email:"",
     Password:"",
   })
+  const[loading,setLoading]=useState(false);
 
   const handleChange=(e)=>{
     setLoginData(prev=>({...prev,[e.target.name]:e.target.value}));
@@ -20,6 +21,7 @@ const Login = () => {
   const handleSubmit=async(e)=>{
     e.preventDefault();
     try {
+      setLoading(true)
        const resp=await axios.post(`${VITE_URL}/Login`,LoginData,{
         withCredentials:true
        })
@@ -35,6 +37,9 @@ const Login = () => {
       console.log("something went wrong while attampting to login",error.message);
       toast.error(error.message)
     }
+    finally{
+      setLoading(false)
+    }
   }
   return (
     <div className='h-full w-full flex items-center justify-center'>
@@ -43,9 +48,11 @@ const Login = () => {
       <form action="" className='flex flex-col items-center'> 
       <input type="email" placeholder='Enter Email ID' value={LoginData.Email} onChange={handleChange} required name='Email'className='w-11/12 outline-none h-12 text-black rounded-xl px-3 mt-5 bg-gray-50'/>
       <input type="password" placeholder='Enter Password' value={LoginData.Password} required onChange={handleChange} name='Password' className='w-11/12 outline-none h-12 text-black rounded-xl px-3 mt-5 bg-gray-50'/>
-      <button type='submit' onClick={handleSubmit} className='bg-blue-500 text-white h-10 rounded-lg  w-11/12 outline-none mt-6 font-bold text-lg'>Login</button>
+      <button type='submit' onClick={handleSubmit} className='bg-blue-500 text-white h-10 rounded-lg  w-11/12 outline-none mt-6 font-bold text-lg' disabled={loading}>
+      {loading?"Signing...":"Sign in"}</button>
       </form>
-      <h1 className='text-center text-gray-200 mt-2 text-sm'>Do'nt Have Account ? <Link to={"/signup"}>Signup</Link></h1>
+      <h1 className='text-center text-gray-200 mt-2 text-sm'>Do'nt Have Account ? <Link to={"/signup"} >
+      Signup</Link></h1>
       </div>
     </div>
 

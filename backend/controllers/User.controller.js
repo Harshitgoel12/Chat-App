@@ -24,7 +24,9 @@ const OTPSend=async(req,res)=>{
          return res.status(200).json({success:true,message:"OTP send Successfully"});
 
     } catch (error) {
+      console.log("something went wrong ",error.message)
         return res.status(500).json({success:false,message:"Internal Server Error"});
+        
     }
 }
 
