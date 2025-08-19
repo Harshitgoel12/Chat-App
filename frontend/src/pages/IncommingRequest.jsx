@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { User } from '../slices/User.slice';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -11,14 +11,16 @@ const IncommingRequest = ({ setIncommingRequest }) => {
 const [RequestReceived,setIncommingReq]=useState([]);
 useEffect(()=>{
     const IncommingRequest= async()=>{
-            try {
+            // try {
                const resp= await  axios.get(`${VITE_URL}/IncommingRequest`,{
                   withCredentials:true
                  })
+                 console.log(resp)
                  setIncommingReq(resp.data.request);
-            } catch (error) {
-              console.log("something went wrong while getting incomming request",error.message);
-            }
+           // } catch (error) {
+              // console.log("something went wrong while getting incomming request",error.message);
+              // toast.error("Can't fetched the Requests");
+          //  }
     }
     IncommingRequest();
 },[])
