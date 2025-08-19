@@ -1,22 +1,17 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
- plugins: [
-    react(),
-    tailwindcss(),
-  ],
+  plugins: [react()],
   define: {
-  'process.env': {},
-    global: 'window',
+    "process.env": {},
+    global: "window",
   },
-   resolve: {
+  resolve: {
     alias: {
-        'readable-stream': 'vite-compatible-readable-stream',
-      stream: 'vite-compatible-readable-stream',
-      process: 'process/browser',
+      "readable-stream": "vite-compatible-readable-stream",
+      stream: "vite-compatible-readable-stream",
+      process: "process/browser",
     },
   },
- 
-})
+});

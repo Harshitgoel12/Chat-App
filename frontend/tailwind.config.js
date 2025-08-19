@@ -1,18 +1,18 @@
 // tailwind.config.js (for ES modules)
-import scrollbar from 'tailwind-scrollbar';
-import scrollbarHide from 'tailwind-scrollbar-hide';
+import scrollbar from 'tailwind-scrollbar'
+import scrollbarHide from 'tailwind-scrollbar-hide'
 
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    "./index.html", // <- ye mat bhulna
+    "./index.html",
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {},
   },
   plugins: [
-    scrollbar(),      // <- function call
-    scrollbarHide()   // <- function call
+    scrollbar,      // ❌ scrollbar()
+    scrollbarHide   // ❌ scrollbarHide()
   ],
-};
+}
