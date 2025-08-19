@@ -13,7 +13,7 @@ const Search = ({ onClose }) => {
   const [Users,setUsers]=useState([]);
   async function fun(){
   
-   const resp= await axios.get(`${VITE_URL}/api/v1/Search/`,{
+   const resp= await axios.get(`${VITE_URL}/Search/`,{
       withCredentials:true
      })
      setUsers(resp.data.data);
