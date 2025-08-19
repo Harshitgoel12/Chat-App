@@ -1,4 +1,3 @@
-
 import * as process from "process";
 global.process = process;
 import { Buffer } from 'buffer';
@@ -16,12 +15,9 @@ import Contact from './pages/Contact.jsx'
 import { Provider } from 'react-redux'
 import store from  "./store.js"
 import Profile from './pages/Profile.jsx'
-import  Home  from './Home.jsx'
+import Home from './Home.jsx'
 import Video from './pages/Video.jsx'
-import socket from './socket.js'
-
-
-
+import ProtectedRoute from "./ProtectedRoute.jsx" 
 
 const appRouter= createBrowserRouter([
   {
@@ -46,27 +42,35 @@ const appRouter= createBrowserRouter([
       },
       {
         path:"contacts",
-        element:<Contact/>,
-        
+        element: (
+          <ProtectedRoute>
+            <Contact />
+          </ProtectedRoute>
+        ),
       },
       {
         path:"Profile/:id",
-        element:<Profile/>
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        ),
       },
       {
         path:"video",
-        element:<Video/>
+        element: (
+          <ProtectedRoute>
+            <Video />
+          </ProtectedRoute>
+        ),
       }
-
     ]
   }
-     
-   
 ])
+
+
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-  <RouterProvider router={appRouter}>
-    <App />
-    </RouterProvider>
-    </Provider>
+    <RouterProvider router={appRouter} />
+  </Provider>
 )

@@ -11,16 +11,14 @@ const IncommingRequest = ({ setIncommingRequest }) => {
 const [RequestReceived,setIncommingReq]=useState([]);
 useEffect(()=>{
     const IncommingRequest= async()=>{
-            // try {
+             try {
                const resp= await  axios.get(`${VITE_URL}/IncommingRequest`,{
                   withCredentials:true
                  })
-                 console.log(resp)
                  setIncommingReq(resp.data.request);
-           // } catch (error) {
-              // console.log("something went wrong while getting incomming request",error.message);
-              // toast.error("Can't fetched the Requests");
-          //  }
+           } catch (error) {
+              toast.error("Can't fetched the Requests");
+           }
     }
     IncommingRequest();
 },[])
@@ -36,7 +34,6 @@ useEffect(()=>{
      setIncommingReq(resp.data.data.RequestReceived)
       toast.success("Request Accepted Successfully");
     } catch (error) {
-      console.log("Error accepting request:", error.message);
       toast.error(error.message);
     }
   };
@@ -51,7 +48,6 @@ useEffect(()=>{
       toast.success("Request Rejected Successfully");
        setIncommingReq(resp.data.data.RequestReceived)
     } catch (error) {
-      console.log("Error rejecting request:", error.message);
       toast.error(error.message);
     }
   };

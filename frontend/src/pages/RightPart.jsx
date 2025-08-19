@@ -10,17 +10,17 @@ import { toast } from 'react-toastify';
 
 const RightPart = () => {
   const  VITE_URL= import.meta.env.VITE_API_URL
+  const onlineusers= useSelector((state)=>state.OnlineUserStore.data)
   const myuser = useSelector((state) => state.user.userData);
   const myID = myuser?._id;
   const SelectedUser = useSelector((state) => state.user.Receiver);
-
+const [loading,setLoading]=useState(false);
   const [input, setInput] = useState('');
   const [Messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const navigate=useNavigate();
 
-  // Fetch chat history
   const fetchAllMessages = async () => {
     try {
       const resp = await axios.get(
@@ -30,7 +30,6 @@ const RightPart = () => {
       if (!resp.data.success) throw new Error(resp.data.message);
       setMessages(resp.data.data);
     } catch (error) {
-      console.log('Error fetching messages:', error.message);
       toast.error("Can't Fetched Chats")
     }
   };
@@ -41,7 +40,7 @@ const RightPart = () => {
 
   const handleSend = async () => {
     if (!input.trim()) return;
-
+    setLoading(true);
     try {
       const resp = await axios.post(
         `${VITE_URL}/Send-Message/${SelectedUser._id}`,
@@ -58,7 +57,10 @@ const RightPart = () => {
       setInput('');
       setMessages((prev)=>[...prev,resp.data.data]);
     } catch (error) {
-      console.log('Send error:', error.message);
+      toast.error(error.message);
+    }
+    finally{
+      setLoading(false);
     }
   };
 
@@ -127,8 +129,12 @@ console.log(file,fileType)
   }, [Messages]);
 
 
-if(!SelectedUser){
+if(!SelectedUser&&myuser&&myuser.myContacts.length>0){
   return <DefaultPage/>
+  
+}
+if(!myuser||myuser.myContacts.length==0){
+  return null;
 }
 
 
@@ -147,7 +153,13 @@ const handleCall=()=>{
           <img src={SelectedUser?.url} className="h-12 w-12 rounded-full" alt="user" />
           <div>
             <h2 className="text-white font-bold text-lg">{SelectedUser?.Username}</h2>
-            <p className="text-green-400 text-sm">Online</p>
+         
+  {onlineusers&&onlineusers.includes(String(SelectedUser._id))
+ ? (
+    <h1 className='text-green-400 text-sm'>Online</h1>
+  ) : (
+    <h1 className='text-red-500 text-sm'>Offline</h1>
+  )}
             <p className='text-white  cursor-pointer' onClick={handleCall}>Call</p>
           </div>
         </div>
@@ -213,6 +225,7 @@ const handleCall=()=>{
           <button
             onClick={handleSend}
             className="bg-blue-600 md:mb-0 mb-10 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+            disabled={loading}
           >
             Send
           </button>

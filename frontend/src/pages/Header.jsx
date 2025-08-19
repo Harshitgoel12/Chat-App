@@ -76,7 +76,6 @@ const Header = () => {
           </Link>
         </nav>
 
-        {/* Right Section */}
         <div className="relative flex items-center gap-3">
           {user ? (
             <>

@@ -5,7 +5,6 @@ function Footer() {
   return (
     <footer className="bg-black/90 text-gray-300 py-8 px-6 md:px-16 ">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Brand */}
         <div>
           <h3 className="text-2xl font-bold text-purple-400">ChatConnect</h3>
           <p className="text-sm text-gray-400 mt-2">
@@ -13,7 +12,6 @@ function Footer() {
           </p>
         </div>
 
-        {/* Quick Links */}
         <div>
           <h4 className="text-lg font-semibold mb-3">Quick Links</h4>
           <ul className="space-y-2">
@@ -40,7 +38,6 @@ function Footer() {
           </ul>
         </div>
 
-        {/* Social */}
         <div>
           <h4 className="text-lg font-semibold mb-3">Follow Us</h4>
           <div className="flex gap-4 text-2xl">

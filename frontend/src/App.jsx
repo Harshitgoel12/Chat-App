@@ -12,6 +12,7 @@ import { Caller } from './slices/ReceiveCall.slice';
 import Footer from './pages/Footer';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { setOnlineUser } from './slices/OnlineUser';
 
 function App() {
   const dispatch= useDispatch();
@@ -19,11 +20,23 @@ const myuser = useSelector((state) => state.user.userData);
   const myID = myuser?._id;
      const [ReceivingCall,setReceivingCall]=useState(false);
     const[AcceptCall,setAcceptCall]=useState(false);
-   useEffect(() => {
-      if (myID) {
-        socket.emit('add-user', myID);
-      }
-    }, [myID]);
+ 
+
+  useEffect(() => {
+  if (!myID) return;
+
+  socket.emit('add-user', myID);
+
+  const handleOnlineUsers = (data) => {
+    dispatch(setOnlineUser(data));
+  };
+
+  socket.on("Online-User", handleOnlineUsers);
+
+  return () => {
+    socket.off("Online-User", handleOnlineUsers); 
+  };
+}, [myID, dispatch]);
 
  
 useEffect(()=>{

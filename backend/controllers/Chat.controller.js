@@ -110,10 +110,5 @@ const UploadFile=async(req,res)=>{
 }
 
 
-
-
-
-
-
 module.exports={SendMessage,GetChat,UploadFile};
 

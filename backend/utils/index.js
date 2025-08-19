@@ -28,8 +28,10 @@ io.on("connection", (socket) => {
     socket.userId = userId;
     onlineUsers.set(userId, socket.id);
     UserConnected(socket.id, userId); 
-  
+    io.emit("Online-User",[...onlineUsers.keys()])
   });
+
+
 
   socket.on("CallToUser",(data)=>{
     const socketId=onlineUsers.get(data.CallToUser);
@@ -101,7 +103,7 @@ io.on("connection", (socket) => {
     if (socket.userId) {
       onlineUsers.delete(socket.userId);
       UserDisconnected(socket.userId); 
-      
+        io.emit("Online-User",[...onlineUsers.keys()])
     }
   });
 });

@@ -6,111 +6,57 @@ import { User } from '../slices/User.slice';
 import { toast } from 'react-toastify';
 
 const Profile = () => {
-  const  VITE_URL= import.meta.env.VITE_API_URL
-  const [isEditing, setIsEditing] = useState(false);
-  const [user, setUser] = useState(null);
-  const [backupUser, setBackupUser] = useState(null);
-  const [isCurrentUser, setIsCurrentUser] = useState(false);
-  const [requestStatus, setRequestStatus] = useState("Request");
-
+  const VITE_URL = import.meta.env.VITE_API_URL;
   const { id } = useParams();
   const dispatch = useDispatch();
-  let currentUser = useSelector(state => state.user.userData);
-  currentUser = currentUser || {};
+  const currentUser = useSelector((state) => state.user.userData) || {};
 
-  const handleChange = (field, value) => {
-    setUser({ ...user, [field]: value });
-  };
-
- 
+  const [user, setUser] = useState(null);
+  const [backupUser, setBackupUser] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isCurrentUser, setIsCurrentUser] = useState(false);
+  const [requestStatus, setRequestStatus] = useState('Request');
 
   const fetchData = async () => {
     try {
       const resp = await axios.get(`${VITE_URL}/Profile/${id}`, {
         withCredentials: true,
       });
-      console.log("user profile is ",resp.data.data)
-      setUser(resp.data.data);
-       
-    if (user?.RequestSend) {
-      for (let ele of user.RequestSend) {
-        if (ele === currentUser._id) {
-            setRequestStatus("Pending")
-          break;
-        }
+      const fetchedUser = resp.data.data;
+      setUser(fetchedUser);
+      setBackupUser(fetchedUser);
+
+      if (fetchedUser.myContacts?.includes(currentUser._id)) {
+        setRequestStatus('Accepted');
+      } else if (fetchedUser.RequestSend?.includes(currentUser._id)) {
+        setRequestStatus('Pending');
+      } else {
+        setRequestStatus('Request');
       }
-    }
-     if (user?.myContacts) {
-      console.log("id is ",user.myContacts)
-      for (let ele of user.myContacts) {
-        
-        if (ele === currentUser._id) {
-          
-            setRequestStatus("Accepted")
-          break;
-        }
-      }
-    }
-      setBackupUser(resp.data.data);
     } catch (error) {
-      console.log("Error while fetching user data:", error.message);
-      toast.error(error.message)
+      toast.error(error.message);
     }
   };
 
   useEffect(() => {
-    if (currentUser?._id === id) {
-      setIsCurrentUser(true);
-    }
-
-    
-    if (currentUser?.RequestSend) {
-      for (let ele of currentUser.RequestSend) {
-        if (ele?.User?._id === id) {
-         
-          break;
-        }
-      }
-    }
- 
-  
-
+    if (currentUser._id === id) setIsCurrentUser(true);
     fetchData();
+  }, [id, currentUser._id]);
 
-
-  }, []);
+  
+  const handleChange = (field, value) => setUser({ ...user, [field]: value });
 
   const handleSave = async () => {
     try {
-      const resp = await axios.put(
-        `${VITE_URL}/SaveProfile/${id}`,
-        user,
-        { withCredentials: true }
-      );
-   toast.success("Profie Saved Successfully")
-      localStorage.setItem("Userdata", JSON.stringify(resp.data.data));
+      const resp = await axios.put(`${VITE_URL}/SaveProfile/${id}`, user, {
+        withCredentials: true,
+      });
+      toast.success('Profile Saved Successfully');
+      localStorage.setItem('Userdata', JSON.stringify(resp.data.data));
+      setBackupUser(user);
       setIsEditing(false);
       dispatch(User(resp.data.data));
-      setBackupUser(user);
     } catch (error) {
-      console.log("Error while saving user data:", error.message);
-      toast.error(error.message)
-    }
-  };
-
-  const sendFriendRequest = async () => {
-    try {
-      const resp = await axios.post(
-        `${VITE_URL}/SendFriendRequest/${id}`,
-        {},
-        { withCredentials: true }
-      );
-         toast.success("Friend Request Send Successfully")
-      localStorage.setItem("Userdata", JSON.stringify(resp.data.data));
-      dispatch(User(resp.data.data));
-      setRequestStatus("Pending");
-    } catch (error) {
-      console.log("Error while sending friend request:", error.message);
       toast.error(error.message);
     }
   };
@@ -118,6 +64,20 @@ const Profile = () => {
   const handleCancel = () => {
     setUser(backupUser);
     setIsEditing(false);
+  };
+
+  const sendFriendRequest = async () => {
+    try {
+      const resp = await axios.post(`${VITE_URL}/SendFriendRequest/${id}`, {}, {
+        withCredentials: true,
+      });
+      toast.success('Friend Request Sent Successfully');
+      localStorage.setItem('Userdata', JSON.stringify(resp.data.data));
+      dispatch(User(resp.data.data));
+      setRequestStatus('Pending');
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   if (!user) {
@@ -137,7 +97,7 @@ const Profile = () => {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               {isEditing ? (
                 <input
-                  value={user?.username || ""}
+                  value={user?.username || ''}
                   onChange={(e) => handleChange('username', e.target.value)}
                   className="text-3xl font-bold bg-transparent border-b border-white/30 w-full sm:w-auto focus:outline-none"
                 />
@@ -147,37 +107,39 @@ const Profile = () => {
 
               {isEditing ? (
                 <div className="flex gap-2">
-                  <button onClick={handleSave} className="bg-green-600 px-4 py-1 rounded">Save</button>
-                  <button onClick={handleCancel} className="bg-gray-600 px-4 py-1 rounded">Cancel</button>
+                  <button onClick={handleSave} className="bg-green-600 px-4 py-1 rounded">
+                    Save
+                  </button>
+                  <button onClick={handleCancel} className="bg-gray-600 px-4 py-1 rounded">
+                    Cancel
+                  </button>
                 </div>
+              ) : isCurrentUser ? (
+                <button onClick={() => setIsEditing(true)} className="bg-violet-600 px-4 py-1 rounded">
+                  Edit
+                </button>
+              ) : requestStatus === 'Request' ? (
+                <button
+                  className="w-28 text-sm h-10 text-white rounded-xl bg-blue-500"
+                  onClick={sendFriendRequest}
+                >
+                  Request
+                </button>
+              ) : requestStatus === 'Pending' ? (
+                <button className="bg-yellow-500 text-white font-semibold text-md px-2 py-2 rounded-xl">
+                  Pending
+                </button>
               ) : (
-                isCurrentUser ? (
-                  <button onClick={() => setIsEditing(true)} className="bg-violet-600 px-4 py-1 rounded">Edit</button>
-                ) : (
-                  requestStatus === "Request" ? (
-                    <button
-                      className="w-28 text-sm h-10 text-white rounded-xl bg-blue-500"
-                      onClick={sendFriendRequest}
-                    >
-                      Request
-                    </button>
-                  ) : requestStatus === "Pending" ? (
-                    <button className="bg-yellow-500 text-white font-semibold text-md px-2 py-2 rounded-xl">
-                      Pending
-                    </button>
-                  ) : (
-                    <button className="bg-green-500 text-white font-semibold text-md px-2 py-2 rounded-xl">
-                      Accepted
-                    </button>
-                  )
-                )
+                <button className="bg-green-500 text-white font-semibold text-md px-2 py-2 rounded-xl">
+                  Accepted
+                </button>
               )}
             </div>
 
             <p className="text-white/70 mt-2">
               {isEditing ? (
                 <input
-                  value={user?.email || ""}
+                  value={user?.email || ''}
                   onChange={(e) => handleChange('email', e.target.value)}
                   className="bg-transparent border-b border-white/20 w-full focus:outline-none"
                 />
@@ -205,19 +167,20 @@ const Profile = () => {
   );
 };
 
+
 const Field = ({ label, value, isEditing, onChange, type = 'text' }) => (
   <div>
     <p className="font-semibold">{label}:</p>
     {isEditing ? (
       type === 'textarea' ? (
         <textarea
-          value={value || ""}
+          value={value || ''}
           onChange={(e) => onChange(e.target.value)}
           className="w-full bg-white/10 mt-1 p-2 rounded resize-none"
         />
       ) : (
         <input
-          value={value || ""}
+          value={value || ''}
           onChange={(e) => onChange(e.target.value)}
           className="w-full bg-white/10 mt-1 p-2 rounded"
         />
@@ -228,12 +191,13 @@ const Field = ({ label, value, isEditing, onChange, type = 'text' }) => (
   </div>
 );
 
+
 const ListInput = ({ label, list, isEditing, onChange }) => (
   <div className="mt-4">
     <p className="font-semibold">{label}:</p>
     {isEditing ? (
       <input
-        value={list?.join(', ') || ""}
+        value={list?.join(', ') || ''}
         onChange={(e) => onChange(e.target.value.split(',').map((item) => item.trim()))}
         className="w-full bg-white/10 mt-1 p-2 rounded"
       />

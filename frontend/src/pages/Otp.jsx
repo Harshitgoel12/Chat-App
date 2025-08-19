@@ -4,6 +4,8 @@ import axios from "axios"
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { RotatingLines } from 'react-loader-spinner';
+
 const Otp = () => {
   const  VITE_URL= import.meta.env.VITE_API_URL
     const [otp, setOTP] = useState("");
@@ -17,7 +19,6 @@ const Otp = () => {
      const response= await axios.post(`${VITE_URL}/opt-verification`,{otp,Email:userdata.Email},{
       withCredentials:true
      })
- console.log(response)
      if(response.data.success==false){
        throw new Error(response.data.message);
      }
@@ -30,7 +31,6 @@ const Otp = () => {
  }
  navigate("/login")
    } catch (error) {
-    console.log("something went wrong while handleing the otp request",error.message)
     toast.error(error.message)
    }
    finally{
@@ -63,7 +63,25 @@ const Otp = () => {
 />
 <button className='text-white self-end mt-5 bg-blue-400 px-3 py-2 font-semibold text-md rounded-xl cursor-pointer' onClick={handleSubmit}
 disabled={loading}
->{loading?"Submiting...":"Submit"}</button>
+>{loading?
+      (
+  <div className='flex gap-4 w-full  justify-center text-center'>
+        <RotatingLines
+  visible={true}
+  height="20"
+  width="25"
+  color="#3B82F6"
+  strokeWidth="5"
+  animationDuration="0.75"
+  ariaLabel="rotating-lines-loading"
+  wrapperStyle={{}}
+  wrapperClass=""
+  />
+  <p>
+        Sign in
+        </p>
+      </div>
+      ):"Sign in"}</button>
     </div>
     </div>
   )

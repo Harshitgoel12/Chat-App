@@ -17,6 +17,8 @@ const OTPSend=async(req,res)=>{
          if(response){
             return res.status(401).json({success:false,message:"User with same email already exist"});
          }
+
+                await OTP.deleteMany({Email});
          const otp= Math.floor(1000 + Math.random() * 9000);
         
           await sendMail(Email,"Verify OTP",otp,"please verify your self");
@@ -372,6 +374,9 @@ try {
  const IncommingRequest = async(req,res)=>{
   try {
     const userId=req.userData.id;
+    if(!userId){
+        return res.status(401).json({success:false,message:"Please Login"});
+      }
     const userdata= await User.findById(userId).populate("RequestReceived");
     return res.status(200).json({success:true,message:"IncommingRequest fetched successfully", request:userdata.RequestReceived})
   } catch (error) {
@@ -385,6 +390,9 @@ try {
  const SendRequestData  = async(req,res)=>{
   try {
       const userId=req.userData.id;
+      if(!userId){
+        return res.status(401).json({success:false,message:"Please Login"});
+      }
     const userdata= await User.findById(userId).populate("RequestSend");
     return res.status(200).json({success:true,message:"IncommingRequest fetched successfully", request:userdata.RequestSend})
   } catch (error) {
@@ -397,6 +405,9 @@ try {
  const MyContacts= async(req,res)=>{
   try {
       const userId=req.userData.id;
+      if(!userId){
+        return res.status(401).json({success:false,message:"Please Login"});
+      }
     const userdata= await User.findById(userId).populate("myContacts");
     return res.status(200).json({success:true,message:"IncommingRequest fetched successfully", request:userdata.myContacts})
   } catch (error) {

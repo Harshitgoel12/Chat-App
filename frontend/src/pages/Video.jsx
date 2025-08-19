@@ -3,6 +3,12 @@ import Peer from 'simple-peer';
 import socket from '../socket';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { RiVideoOnFill } from "react-icons/ri";
+import { BsFillCameraVideoOffFill } from "react-icons/bs";
+import { FaMicrophone } from "react-icons/fa6";
+import { IoMdMicOff } from "react-icons/io";
+
+
 
 const Video = () => {
   const myuser = useSelector((state) => state.user.userData);
@@ -166,16 +172,20 @@ const Video = () => {
           
           className="bg-gray-700 hover:bg-gray-600 px-4 py-2 md:px-5 md:py-3 rounded-full text-lg shadow-md transition"
           title={micOn ? 'Mute Mic' : 'Unmute Mic'}
+          onClick={()=>setMicOn(!micOn)}
         >
-          {micOn ? '🎤' : '🔇'}
+          {micOn ? <FaMicrophone /> : <IoMdMicOff />
+}
         </button>
 
         <button
           
           className="bg-gray-700 hover:bg-gray-600 px-4 py-2 md:px-5 md:py-3 rounded-full text-lg shadow-md transition"
           title={cameraOn ? 'Turn Off Camera' : 'Turn On Camera'}
+          onClick={()=>setCameraOn(!cameraOn)}
         >
-          {cameraOn ? '🎥' : '📷'}
+          {cameraOn ? <RiVideoOnFill className='text-green-500' />: <BsFillCameraVideoOffFill className='text-red-500'/>
+}
         </button>
       </div>
     </div>

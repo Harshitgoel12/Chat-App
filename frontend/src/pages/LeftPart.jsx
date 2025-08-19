@@ -5,10 +5,12 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import DefaultPage from './DefaultPage';
 
 const LeftPart = () => {
   const  VITE_URL= import.meta.env.VITE_API_URL
 const [myContacts,setContacts]=useState([]);
+const onlineusers= useSelector((state)=>state.OnlineUserStore.data);
   useEffect(()=>{
    const fun = async()=>{
     try {
@@ -17,7 +19,6 @@ const [myContacts,setContacts]=useState([]);
        })
     setContacts(data.data.request);
     } catch (error) {
-      console.log("something went wrong while fetching all contacts",error.message);
       toast.error("Can't Fetched Contacts")
     }
    }
@@ -30,8 +31,10 @@ const [myContacts,setContacts]=useState([]);
   }
 
   if(myContacts.length==0){
-return <h1> No Contacts are present </h1>
+return <DefaultPage data={"You have No Connection Please Make you connection"}/>;
   }
+
+
   
   return (
     <div className={`w-screen md:w-2/3 ${Selecteduser?"md:flex hidden ":""} scrollbar-hide mt-12  min-h-screen`}>
@@ -51,9 +54,15 @@ return <h1> No Contacts are present </h1>
         />
         
         <div>
-        <h1 className="text-white text-lg font-semibold tracking-wide">{ele.Username}</h1>
-        <h1 className='text-green-400 text-sm '>Online</h1>
-        </div>
+  <h1 className="text-white text-lg font-semibold tracking-wide">{ele.Username}</h1>
+  {onlineusers&&onlineusers.includes(String(ele._id))
+ ? (
+    <h1 className='text-green-400 text-sm'>Online</h1>
+  ) : (
+    <h1 className='text-red-500 text-sm'>Offline</h1>
+  )}
+</div>
+
 
       </div>
     ))}
