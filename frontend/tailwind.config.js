@@ -1,6 +1,5 @@
-// tailwind.config.js (for ES modules)
-import scrollbar from 'tailwind-scrollbar'
-import scrollbarHide from 'tailwind-scrollbar-hide'
+// tailwind.config.js (ES module)
+import scrollbarHide from 'tailwind-scrollbar-hide';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -12,7 +11,6 @@ export default {
     extend: {},
   },
   plugins: [
-    scrollbar,      // ❌ scrollbar()
-    scrollbarHide   // ❌ scrollbarHide()
+    scrollbarHide, // only this is enough for Tailwind v3
   ],
-}
+};
