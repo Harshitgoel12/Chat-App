@@ -5,7 +5,7 @@ require("dotenv").config();
 const verify = async (req, res, next) => {
   try {
     const token = req.cookies?.token || req.body?.token ;
-        
+        console.log("token is ",token)
     if (!token) {
       return res.status(401).json({ success: false, message: "Token is not present" });
     }

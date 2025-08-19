@@ -25,11 +25,12 @@ const navigate=useNavigate();
    
    try {
     UserData.url=`https://avatar.iran.liara.run/username?username=${UserData.Username}`
-    console.log(UserData.url)
      if(UserData.Password!=UserData.ConfirmPassword){
        throw new Error("Incurrect Password")
      }
-     const response=await axios.post(`${VITE_URL}/send-otp`,{Email:UserData.Email})
+     const response=await axios.post(`${VITE_URL}/send-otp`,{Email:UserData.Email},{
+      withCredentials:true
+     })
      if(response.data.sucess==false){
        throw new Error(response.data.message);
      }

@@ -13,7 +13,7 @@ const Video = () => {
   const VideoRef = useRef(null);
   const userVideo = useRef(null);
   const ConnectionRef = useRef(null);
-  const isCallInitialized = useRef(false); // Prevent duplicate call setup
+  const isCallInitialized = useRef(false);
 
   const location = useLocation();
   const navigate = useNavigate();

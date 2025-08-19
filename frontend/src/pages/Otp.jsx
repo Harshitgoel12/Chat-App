@@ -14,7 +14,9 @@ const Otp = () => {
     e.preventDefault();
    try {
     setLoading(true)
-     const response= await axios.post(`${VITE_URL}/opt-verification`,{otp,Email:userdata.Email})
+     const response= await axios.post(`${VITE_URL}/opt-verification`,{otp,Email:userdata.Email},{
+      withCredentials:true
+     })
  console.log(response)
      if(response.data.success==false){
        throw new Error(response.data.message);

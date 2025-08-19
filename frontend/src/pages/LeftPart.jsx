@@ -28,6 +28,10 @@ const [myContacts,setContacts]=useState([]);
   const SelectUserHandler=(id)=>{
     dispatch(SelectedUser(id));
   }
+
+  if(myContacts.length==0){
+return <h1> No Contacts are present </h1>
+  }
   
   return (
     <div className={`w-screen md:w-2/3 ${Selecteduser?"md:flex hidden ":""} scrollbar-hide mt-12  min-h-screen`}>

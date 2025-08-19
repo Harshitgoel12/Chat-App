@@ -100,12 +100,12 @@ const data={
 
         await response.populate("RequestSend RequestReceived myContacts")
 
-        return res.cookie("token",token, {
-        httpOnly: true,
-        secure: false, 
-        sameSite: "lax",
-        maxAge: 2 * 24 * 60 * 60 * 1000, 
-      }).json({success:true,message:"User Login Successfully",data:response});
+return res.cookie("token", token, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  maxAge: 2 * 24 * 60 * 60 * 1000,
+}).json({ success: true, message: "User Login Successfully", data: response })
 
     } catch (error) {
         console.log("something went wrong while Login User",error.message);
