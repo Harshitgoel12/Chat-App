@@ -68,8 +68,8 @@ if(!existingConversation){
 
 const UploadFile = async (req, res) => {
   try {
-    const Id = req.userData.id;
-    const { id } = req.params;
+    const Id = req.userData.id;         // sender
+    const { id } = req.params;          // receiver
     const file = req.file;
 
     if (!file) {
@@ -81,16 +81,17 @@ const UploadFile = async (req, res) => {
 
     // Upload buffer directly to Cloudinary
     const result = await new Promise((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
+      const uploadStream = cloudinary.uploader.upload_stream(
         { resource_type: "auto" },
         (error, uploaded) => {
           if (error) reject(error);
           else resolve(uploaded);
         }
       );
-      stream.end(file.buffer);
+      uploadStream.end(file.buffer);
     });
-console.log(stream);
+
+    // Save message
     const data = await Message.create({
       senderId: Id,
       receiverId: id,
@@ -98,12 +99,18 @@ console.log(stream);
       fileType: result.format,
     });
 
+    // Find or create conversation
     let conversation = await Conversation.findOne({ participants: { $all: [Id, id] } });
+
     if (!conversation) {
-      conversation = new Conversation({ participants: [Id, id], ConversationData: [] });
+      conversation = new Conversation({
+        participants: [Id, id],
+        ConversationData: [],
+      });
       await conversation.save();
     }
 
+    // Push new message into conversation
     conversation.ConversationData.push(data);
     await conversation.save();
     await conversation.populate("ConversationData");
@@ -113,6 +120,7 @@ console.log(stream);
       message: "File sent successfully",
       data,
     });
+
   } catch (error) {
     console.error("Error uploading file:", error);
     return res.status(500).json({ success: false, message: error.message });
