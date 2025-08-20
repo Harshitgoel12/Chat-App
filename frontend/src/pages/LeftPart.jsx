@@ -38,7 +38,7 @@ return <DefaultPage data={"You have No Connection Please Make you connection"}/>
   
   return (
     <div className={`w-screen md:w-2/3 ${Selecteduser?"md:flex hidden ":""} scrollbar-hide mt-12  min-h-screen`}>
-      <div className='w-full min-h-screen bg-transparent shadow-xl shadow-amber-400 backdrop-blur-sm  '>
+      <div className='w-full min-h-screen bg-transparent  backdrop-blur-sm  '>
       <div className='w-full'>
        
     {myContacts?.map((ele, i) => (

@@ -139,6 +139,28 @@ const Video = () => {
     navigate('/contacts');
   };
 
+
+
+
+   const toggleMic = () => {
+    if (stream) {
+      stream.getAudioTracks().forEach(track => {
+        track.enabled = !micOn;
+      });
+      setMicOn(!micOn);
+    }
+  };
+
+
+   const toggleCamera = () => {
+    if (stream) {
+      stream.getVideoTracks().forEach(track => {
+        track.enabled = !cameraOn;
+      });
+      setCameraOn(!cameraOn);
+    }
+  };
+
   return (
     <div className="relative w-screen h-screen bg-black text-white font-sans overflow-hidden">
       
@@ -172,7 +194,7 @@ const Video = () => {
           
           className="bg-gray-700 hover:bg-gray-600 px-4 py-2 md:px-5 md:py-3 rounded-full text-lg shadow-md transition"
           title={micOn ? 'Mute Mic' : 'Unmute Mic'}
-          onClick={()=>setMicOn(!micOn)}
+          onClick={toggleMic}
         >
           {micOn ? <FaMicrophone /> : <IoMdMicOff />
 }
@@ -182,7 +204,7 @@ const Video = () => {
           
           className="bg-gray-700 hover:bg-gray-600 px-4 py-2 md:px-5 md:py-3 rounded-full text-lg shadow-md transition"
           title={cameraOn ? 'Turn Off Camera' : 'Turn On Camera'}
-          onClick={()=>setCameraOn(!cameraOn)}
+          onClick={toggleCamera}
         >
           {cameraOn ? <RiVideoOnFill className='text-green-500' />: <BsFillCameraVideoOffFill className='text-red-500'/>
 }

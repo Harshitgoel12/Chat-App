@@ -18,7 +18,7 @@ const mailOptions = {
   from:process.env.SENDER_EMAIL,
   to: email,
   subject: subject,
-  text: `<!DOCTYPE html>
+  html: `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />

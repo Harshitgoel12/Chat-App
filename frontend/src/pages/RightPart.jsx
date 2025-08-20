@@ -7,6 +7,7 @@ import DefaultPage from './DefaultPage';
 import { useNavigate } from 'react-router-dom';
 import Peer from "simple-peer"
 import { toast } from 'react-toastify';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 const RightPart = () => {
   const  VITE_URL= import.meta.env.VITE_API_URL
@@ -227,7 +228,18 @@ const handleCall=()=>{
             className="bg-blue-600 md:mb-0 mb-10 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
             disabled={loading}
           >
-            Send
+            {loading ? (
+  <div className="flex gap-4 w-full justify-center items-center text-center">
+    <ClipLoader
+      size={20} 
+      color="#000000" 
+      loading={true}
+    />
+    <p>Sending</p>
+  </div>
+) : (
+  "Send"
+)}
           </button>
         </div>
       </div>

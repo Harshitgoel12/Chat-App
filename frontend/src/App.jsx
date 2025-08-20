@@ -50,7 +50,7 @@ return ()=>{
 },[])
  
 
-
+ const noFooterRoutes = ["/Contacts", "/video"];
   return (
     <>
     <ToastContainer
@@ -68,7 +68,7 @@ return ()=>{
     <div className='image overflow-x-hidden scrollbar-hide  w-screen h-screen'>
       <Header/>
      <Outlet/>
-     <Footer/>
+    {!noFooterRoutes.includes(location.pathname) && <Footer />}
      </div>
      {ReceivingCall&&!AcceptCall&&<ReceivceCall setReceivingCall={setReceivingCall} setAcceptCall={setAcceptCall}/>}
     </>

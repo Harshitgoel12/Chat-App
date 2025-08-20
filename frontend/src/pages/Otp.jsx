@@ -66,8 +66,8 @@ disabled={loading}
 >{loading ? (
   <div className="flex gap-4 w-full justify-center items-center text-center">
     <ClipLoader
-      size={35} // spinner ka size
-      color="#3B82F6" // tailwind blue-500
+      size={20} 
+      color="#000000" 
       loading={true}
     />
     <p>submiting</p>
