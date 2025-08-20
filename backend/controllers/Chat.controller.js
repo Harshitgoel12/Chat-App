@@ -66,48 +66,58 @@ if(!existingConversation){
 
 
 
+const UploadFile = async (req, res) => {
+  try {
+    const Id = req.userData.id;
+    const { id } = req.params;
+    const file = req.file;
 
-const UploadFile=async(req,res)=>{
-    try {
-        const Id=req.userData.id;
-        const {id}=req.params;
-        const file=req.file;
-      
-        if(!file){
-            return res.status(401).json({success:false,message:"file is not present"});
+    if (!file) {
+      return res.status(400).json({ success: false, message: "File is not present" });
+    }
+    if (!id) {
+      return res.status(400).json({ success: false, message: "Invalid User" });
+    }
+
+    // Upload buffer directly to Cloudinary
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { resource_type: "auto" },
+        (error, uploaded) => {
+          if (error) reject(error);
+          else resolve(uploaded);
         }
-        if(!id){
-            return res.status(401).json({success:false,message:"Invalid User"});
-        }
-        const resp=await cloudinary.uploader.upload(file.path);
-       
-
-        const data=await Message.create({
-            senderId:Id,receiverId:id,file:resp.secure_url,fileType:resp.format
-        })
-
-  let existparticipants= await Conversation.findOne({participants:{$all:[Id,id]}});
-  if(!existparticipants){
-      existingConversation = new Conversation({
-      participants: [Id,id],
-      ConversationData: []
+      );
+      stream.end(file.buffer);
     });
 
-    await existingConversation.save();
-  }
+    const data = await Message.create({
+      senderId: Id,
+      receiverId: id,
+      file: result.secure_url,
+      fileType: result.format,
+    });
 
-  existparticipants.ConversationData.push(data);
-  await existparticipants.save();
-
-  existparticipants=await existparticipants.populate("ConversationData");
-
-        return res.status(200).json({success:true,message:"file send successfully",data})
-
-    } catch (error) {
-        console.log("something went wrong while uploading file ",error.message);
-        return res.status(500).json({success:false,message:"Internal Server Error"});
+    let conversation = await Conversation.findOne({ participants: { $all: [Id, id] } });
+    if (!conversation) {
+      conversation = new Conversation({ participants: [Id, id], ConversationData: [] });
+      await conversation.save();
     }
-}
+
+    conversation.ConversationData.push(data);
+    await conversation.save();
+    await conversation.populate("ConversationData");
+
+    return res.status(200).json({
+      success: true,
+      message: "File sent successfully",
+      data,
+    });
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 
 module.exports={SendMessage,GetChat,UploadFile};
