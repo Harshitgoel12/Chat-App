@@ -90,7 +90,7 @@ const UploadFile = async (req, res) => {
       );
       stream.end(file.buffer);
     });
-
+console.log(stream);
     const data = await Message.create({
       senderId: Id,
       receiverId: id,
