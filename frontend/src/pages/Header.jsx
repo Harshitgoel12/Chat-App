@@ -29,7 +29,6 @@ const Header = () => {
       localStorage.removeItem("Userdata");
       dispatch(User(null));
     } catch (err) {
-      console.error("Logout failed:", err.message);
       toast.error(err.message);
     }
   };

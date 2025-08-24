@@ -4,7 +4,6 @@ import { SelectedUser } from '../slices/User.slice';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
 import DefaultPage from './DefaultPage';
 
 const LeftPart = () => {
@@ -19,7 +18,7 @@ const onlineusers= useSelector((state)=>state.OnlineUserStore.data);
        })
     setContacts(data.data.request);
     } catch (error) {
-      toast.error("Can't Fetched Contacts")
+      console.log();
     }
    }
    fun();

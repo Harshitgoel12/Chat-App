@@ -115,7 +115,6 @@ const Video = () => {
 
 
   const endCall = () => {
-    console.log("Call End Triggered");
 
     setCallEnded(true);
 

@@ -17,7 +17,6 @@ const Search = ({ onClose }) => {
       withCredentials:true
      })
      setUsers(resp.data.data);
-     console.log(resp.data)
   }
 useEffect(()=>{
     fun();
